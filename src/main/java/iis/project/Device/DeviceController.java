@@ -28,7 +28,7 @@ public class DeviceController {
     public ResponseEntity<?> create(@RequestBody NewDeviceDTO newDeviceDTO){
         return ResponseEntity.ok(deviceService.create(newDeviceDTO));
     }
-    @DeleteMapping("{/deviceId}")
+    @DeleteMapping("/{deviceId}")
     public ResponseEntity<?> delete(@PathVariable Long deviceId){
         deviceService.delete(deviceId);
         return ResponseEntity.ok("Device deleted successfully");
