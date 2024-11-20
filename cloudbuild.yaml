@@ -5,6 +5,16 @@ steps:
     args: ['clean', 'package']
     id: Build-JAR
 
+  # Перемещение JAR-файла в доступное место
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        mkdir -p /workspace/target
+        mv target/IIS-v1.jar /workspace/target/IIS-v1.jar
+    id: Move-JAR
+
   # Этап сборки Docker-образа
   - name: gcr.io/cloud-builders/docker
     args:
