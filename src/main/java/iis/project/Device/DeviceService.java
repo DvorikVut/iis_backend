@@ -2,8 +2,11 @@ package iis.project.Device;
 
 import iis.project.Device.dto.NewDeviceDTO;
 import iis.project.DeviceType.DeviceTypeService;
+import iis.project.EmailSender.EmailSenderService;
 import iis.project.Exceptions.NotAuthorizedException;
 import iis.project.Exceptions.ResourceNotFoundException;
+import iis.project.Reservation.Reservation;
+import iis.project.Reservation.ReservationService;
 import iis.project.Studio.Studio;
 import iis.project.Studio.StudioService;
 import iis.project.User.Role;
@@ -14,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,12 +27,16 @@ public class DeviceService {
     private final UserService userService;
     private final DeviceTypeService deviceTypeService;
     private final StudioService studioService;
+    private final ReservationService reservationService;
+    private final EmailSenderService emailSenderService;
 
-    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService) {
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService) {
         this.deviceRepository = deviceRepository;
         this.userService = userService;
         this.deviceTypeService = deviceTypeService;
         this.studioService = studioService;
+        this.reservationService = reservationService;
+        this.emailSenderService = emailSenderService;
     }
 
     public Device create(NewDeviceDTO newDeviceDTO) {
@@ -58,16 +66,15 @@ public class DeviceService {
 
     public void delete(Long device_id) {
 
-        //TODO: DELETE DEVICE WITH LOGIC TO HANDLE RESERVATIONS
-
-
         //1 - check if it is borrowed ( Find reservations, where start - currentTime - end)
+        if(!reservationService.canDeleteByCurrentTime(device_id))
+            throw new RuntimeException("You cannot delete device when it is borrowed");
 
-
-        //2 - delete all future reservation
-
-
-        //3 - send emails to users
+        List<Reservation> futureReservations = reservationService.getFutureReservations(device_id);
+        for(Reservation reservation : futureReservations){
+            reservationService.delete(reservation.getId());
+            emailSenderService.sendSimpleMessage(reservation.getUser().getEmail(), "Cancel reservation", "Your reservation with " + reservation.getDevice().getName() + " was cancelled, this device is not more available");
+        }
     }
 
     public void change(Long device_id, NewDeviceDTO newDeviceDTO) {
