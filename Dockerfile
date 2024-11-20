@@ -9,10 +9,12 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the application with Maven
-RUN mvn clean install -DskipTests
+RUN mvn clean package
+
+FROM openjdk:22
 
 # Копируем файл jar в контейнер
-COPY target/IIS-v1.jar /app/IIS.jar
+COPY --from=build /app/target/IIS.jar .
 
 # Указываем команду для запуска Spring Boot приложения
 CMD ["java", "-jar", "IIS.jar"]
