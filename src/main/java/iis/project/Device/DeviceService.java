@@ -10,6 +10,7 @@ import iis.project.User.Role;
 import iis.project.User.User;
 import iis.project.User.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@RequiredArgsConstructor
 public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final UserService userService;
     private final DeviceTypeService deviceTypeService;
     private final StudioService studioService;
+
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService) {
+        this.deviceRepository = deviceRepository;
+        this.userService = userService;
+        this.deviceTypeService = deviceTypeService;
+        this.studioService = studioService;
+    }
 
     public Device create(NewDeviceDTO newDeviceDTO) {
         if (!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.TEACHER)))) {
