@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/device-type")
 public class DeviceTypeController {
+
+    //controller
+
     private final DeviceTypeService deviceTypeService;
 
     @GetMapping
