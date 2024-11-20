@@ -2,7 +2,12 @@ package iis.project.DeviceHours;
 
 import iis.project.Device.Device;
 import iis.project.Device.DeviceService;
+import iis.project.DeviceHours.dto.DeviceHoursInfoDTO;
+import iis.project.DeviceHours.dto.DeviceHoursInfoDTOMapper;
+import iis.project.DeviceHours.dto.NewDeviceHoursDTO;
 import iis.project.Exceptions.NotAuthorizedException;
+import iis.project.Exceptions.ResourceNotFoundException;
+import iis.project.Reservation.Reservation;
 import iis.project.Room.RoomService;
 import iis.project.User.Role;
 import iis.project.User.User;
@@ -10,7 +15,8 @@ import iis.project.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +25,19 @@ public class DeviceHoursService {
     private final DeviceService deviceService;
     private final RoomService roomService;
     private final UserService userService;
+    private final DeviceHoursInfoDTOMapper deviceHoursInfoDTOMapper;
 
     public DeviceHours save(DeviceHours deviceHours){
         return deviceHoursRepository.save(deviceHours);
     }
-
     public DeviceHours create(NewDeviceHoursDTO newDeviceHoursDTO){
         Device device = deviceService.getById(newDeviceHoursDTO.device_id());
-        if(!(userService.checkCurrentUserRole(Role.ADMIN)) || (device.getOwner().equals(userService.getCurrentUser()))){
-            throw new NotAuthorizedException("You are not authirized to create DeviceHour for this device");
+        if(!(
+                userService.checkCurrentUserRole(Role.ADMIN))
+                || (device.getOwner().equals(userService.getCurrentUser()
+        ))){
+            throw new NotAuthorizedException("You are not authorized to create DeviceHour for this device");
         }
-
 
         deviceService.checkIfExist(newDeviceHoursDTO.device_id());
         roomService.checkIfExist(newDeviceHoursDTO.room_id());
@@ -42,5 +50,23 @@ public class DeviceHoursService {
                 .endTime(newDeviceHoursDTO.endTime())
                 .build();
         return save(deviceHours);
+    }
+    public List<DeviceHoursInfoDTO> getAllByDeviceId(Long deviceId){
+        return deviceHoursRepository.findAllByDeviceId(deviceId)
+                .stream()
+                .map(deviceHoursInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
+    public DeviceHoursInfoDTO getInfoById(Long deviceHoursId){
+        return deviceHoursRepository.findById(deviceHoursId)
+                .map(deviceHoursInfoDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("DeviceHours with id " + deviceHoursId + " does not exists"));
+    }
+
+    public void deleteById(Long deviceHoursId) {
+        Device device = deviceService.getById(deviceHoursId);
+        User currentUser = userService.getCurrentUser();
+        if(!currentUser.equals(device.getOwner()))
+            throw new NotAuthorizedException("You are not allowed to delete this DeviceHours");
     }
 }

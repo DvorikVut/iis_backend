@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/device-type")
 public class DeviceTypeController {
-
-    //controller
-
     private final DeviceTypeService deviceTypeService;
 
     @GetMapping
@@ -30,7 +27,6 @@ public class DeviceTypeController {
     public ResponseEntity<?> create(@RequestBody NewDeviceTypeDTO newDeviceTypeDTO){
         return ResponseEntity.ok(deviceTypeService.create(newDeviceTypeDTO));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         deviceTypeService.delete(id);

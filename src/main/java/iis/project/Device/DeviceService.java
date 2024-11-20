@@ -10,8 +10,7 @@ import iis.project.User.Role;
 import iis.project.User.User;
 import iis.project.User.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,6 +53,14 @@ public class DeviceService {
 
         //TODO: DELETE DEVICE WITH LOGIC TO HANDLE RESERVATIONS
 
+
+        //1 - check if it is borrowed ( Find reservations, where start - currentTime - end)
+
+
+        //2 - delete all future reservation
+
+
+        //3 - send emails to users
     }
 
     public void change(Long device_id, NewDeviceDTO newDeviceDTO) {
@@ -88,8 +95,8 @@ public class DeviceService {
             throw new ResourceNotFoundException("Device with ID " + device_id + " does not exist");
         }
     }
-    public Device save(Device device) {
-        return deviceRepository.save(device);
+    public void save(Device device) {
+        deviceRepository.save(device);
     }
     public void allowUserToAllDevicesInStudio(Long userId, Long studio_id) {
         Studio studio = studioService.getById(studio_id);
@@ -112,6 +119,20 @@ public class DeviceService {
     public List<Device> getAllByStudioId(Long studio_id) {
         return deviceRepository.findAllByStudio(studioService.getById(studio_id));
     }
-
-
+    //Get all the devices that current user can borrow
+    public List<Device> getAllByUserCanBorrow(){
+        return deviceRepository.findAllByUsersContaining(userService.getById(userService.getCurrentUser().getId()));
+    }
+    public boolean checkIfCanBorrow(Long userId, Long deviceId){
+        return deviceRepository.existsByIdAndUsersContaining(deviceId, userService.getById(userId));
+    }
+    public List<Device> getAll() {
+        return deviceRepository.findAll();
+    }
+    public List<Device> getAllByOwnerId(Long ownerId){
+        return deviceRepository.findAllByOwnerId(ownerId);
+    }
+    public List<Device> getAllByDeviceTypeId(Long deviceTypeId) {
+        return deviceRepository.findAllByDeviceTypeId(deviceTypeId);
+    }
 }

@@ -1,4 +1,4 @@
-package iis.project.Reservation;
+package iis.project.Reservation.dto;
 
 import java.time.LocalDateTime;
 

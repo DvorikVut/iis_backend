@@ -9,5 +9,8 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+    List<Reservation> findAllByDeviceId(Long deviceId);
+    boolean existsByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndStatusAndDeviceId(LocalDateTime startDateTime, LocalDateTime endDateTime, ReservationStatus status, Long DeviceId);
     List<Reservation> findAllByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndDevice(LocalDateTime startDateTime, LocalDateTime endDateTime, Device device);
+    List<Reservation> findAllByUserId(Long userId);
 }
