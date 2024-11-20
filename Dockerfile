@@ -1,5 +1,5 @@
 # Используем официальный образ OpenJDK 17 в качестве базового
-FROM maven:3.9.9-eclipse-temurin-23-jdk AS build
+FROM maven:3.8.3-openjdk-17 AS build
 
 # Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
