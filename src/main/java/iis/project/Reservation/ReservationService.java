@@ -1,5 +1,6 @@
 package iis.project.Reservation;
 
+import com.google.api.client.util.DateTime;
 import iis.project.Device.Device;
 import iis.project.Device.DeviceService;
 import iis.project.Exceptions.BadRequestException;
@@ -95,5 +96,13 @@ public class ReservationService {
         Reservation reservation = getById(reservationId);
         reservation.setStatus(newStatus);
         save(reservation);
+    }
+    public boolean canDeleteByCurrentTime(Long deviceId){
+        LocalDateTime now = LocalDateTime.now();
+        return !reservationRepository.existsByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndStatusAndDeviceId(now,now,ReservationStatus.BORROWED,deviceId);
+    }
+    public List<Reservation> getFutureReservations(Long deviceId){
+        LocalDateTime now = LocalDateTime.now();
+        return reservationRepository.findAllByStartDateTimeLessThanEqualAndDeviceId(now, deviceId);
     }
 }
