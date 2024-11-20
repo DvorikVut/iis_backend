@@ -1,5 +1,5 @@
 # Используем официальный образ OpenJDK 17 в качестве базового
-FROM openjdk:22-jdk-slim
+FROM maven:4.0.0-openjdk-22 AS build
 
 # Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
