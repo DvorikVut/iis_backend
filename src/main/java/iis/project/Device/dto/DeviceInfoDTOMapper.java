@@ -20,6 +20,8 @@ public class DeviceInfoDTOMapper implements Function<Device,DeviceInfoDTO>{
                 .maximumLoanPeriodInHours(device.getMaximumLoanPeriodInHours())
                 .forAll(device.getForAll())
                 .DisabledForBorrowing(device.getDisabledForBorrowing())
+                .studioId(device.getStudio().getId())
+                .studioName(device.getStudio().getName())
                 .build();
     }
 }

@@ -15,6 +15,8 @@ public record DeviceInfoDTO(
         LocalDate purchaseDate,
         Integer maximumLoanPeriodInHours,
         Boolean forAll,
-        Boolean DisabledForBorrowing
+        Boolean DisabledForBorrowing,
+        Long studioId,
+        String studioName
 ) {
 }
