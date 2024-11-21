@@ -6,26 +6,35 @@ import iis.project.Exceptions.ResourceAlreadyExistException;
 import iis.project.Exceptions.ResourceNotFoundException;
 import iis.project.Studio.dto.NewStudioDTO;
 import iis.project.Studio.dto.StudioInfo;
+import iis.project.Studio.dto.StudioInfoDTOMapper;
 import iis.project.User.Role;
 import iis.project.User.User;
 import iis.project.User.UserService;
+import iis.project.User.dto.UserInfo;
+import iis.project.User.dto.UserInfoDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class StudioService {
     private final StudioRepository studioRepository;
     private final UserService userService;
     private final DeviceService deviceService;
+    private final StudioInfoDTOMapper studioInfoDTOMapper;
+    private final UserInfoDTOMapper userInfoDTOMapper;
 
-    public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository){
+
+    public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository, StudioInfoDTOMapper studioInfoDTOMapper, UserInfoDTOMapper userInfoDTOMapper){
         this.studioRepository = studioRepository;
         this.userService = userService;
         this.deviceService = deviceService;
+        this.studioInfoDTOMapper = studioInfoDTOMapper;
+        this.userInfoDTOMapper = userInfoDTOMapper;
     }
 
 
@@ -136,10 +145,9 @@ public class StudioService {
         return studioRepository.getReferenceById(id);
     }
 
-  /*  public StudioInfo getInfoById(Long id){
-        return StudioToStudioInfo(studioRepository.getReferenceById(id));
-    }*/
-
+    public StudioInfo getInfoById(Long id){
+        return studioInfoDTOMapper.apply(studioRepository.getReferenceById(id));
+    }
 
     public boolean checkIfUserIsManager(Long user_id, Long studio_id){
         checkIfExist(studio_id);
@@ -149,7 +157,15 @@ public class StudioService {
         return Objects.equals(studio.getManager().getId(), user_id);
     }
 
-    public List<User> getAllUserByStudioId(Long studio_id){
-        return studioRepository.findUsersByStudioId(studio_id);
+    public List<User> getAllUserByStudioId(Long studioId){
+        return studioRepository.findUsersByStudioId(studioId);
+    }
+
+    public List<UserInfo> getAllUsersInfoByStudioId(Long studioId){
+        return getById(studioId).getUsers().stream().map(userInfoDTOMapper).collect(Collectors.toList());
+
+    }
+    public List<UserInfo> getAllTeachersInfoByStudioId(Long studioId){
+        return getById(studioId).getTeachers().stream().map(userInfoDTOMapper).collect(Collectors.toList());
     }
 }
