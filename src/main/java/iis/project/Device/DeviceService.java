@@ -1,5 +1,7 @@
 package iis.project.Device;
 
+import iis.project.Device.dto.DeviceInfoDTO;
+import iis.project.Device.dto.DeviceInfoDTOMapper;
 import iis.project.Device.dto.NewDeviceDTO;
 import iis.project.DeviceType.DeviceTypeService;
 import iis.project.EmailSender.EmailSenderService;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceService {
@@ -29,14 +32,16 @@ public class DeviceService {
     private final StudioService studioService;
     private final ReservationService reservationService;
     private final EmailSenderService emailSenderService;
+    private final DeviceInfoDTOMapper deviceInfoDTOMapper;
 
-    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService) {
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, DeviceInfoDTOMapper deviceInfoDTOMapper) {
         this.deviceRepository = deviceRepository;
         this.userService = userService;
         this.deviceTypeService = deviceTypeService;
         this.studioService = studioService;
         this.reservationService = reservationService;
         this.emailSenderService = emailSenderService;
+        this.deviceInfoDTOMapper = deviceInfoDTOMapper;
     }
 
     public Device create(NewDeviceDTO newDeviceDTO) {
@@ -130,21 +135,34 @@ public class DeviceService {
             device.getUsers().add(user);
         }
     }
-    public List<Device> getAllByStudioId(Long studio_id) {
-        return deviceRepository.findAllByStudio(studioService.getById(studio_id));
+    public List<DeviceInfoDTO> getAllByStudioId(Long studio_id) {
+        return deviceRepository.findAllByStudio(studioService.getById(studio_id))
+                .stream()
+                .map(deviceInfoDTOMapper)
+                .collect(Collectors.toList());
     }
+
     //Get all the devices that current user can borrow
-    public List<Device> getAllByUserCanBorrow(){
-        return deviceRepository.findAllByUsersContaining(userService.getById(userService.getCurrentUser().getId()));
+    public List<DeviceInfoDTO> getAllByUserCanBorrow(){
+        return deviceRepository.findAllByUsersContaining(userService.getById(userService.getCurrentUser().getId()))
+                .stream()
+                .map(deviceInfoDTOMapper)
+                .collect(Collectors.toList());
     }
     public boolean checkIfCanBorrow(Long userId, Long deviceId){
         return deviceRepository.existsByIdAndUsersContaining(deviceId, userService.getById(userId));
     }
-    public List<Device> getAll() {
-        return deviceRepository.findAll();
+    public List<DeviceInfoDTO> getAll() {
+        return deviceRepository.findAll()
+                .stream()
+                .map(deviceInfoDTOMapper)
+                .collect(Collectors.toList());
     }
-    public List<Device> getAllByOwnerId(Long ownerId){
-        return deviceRepository.findAllByOwnerId(ownerId);
+    public List<DeviceInfoDTO> getAllByOwnerId(Long ownerId){
+        return deviceRepository.findAllByOwnerId(ownerId)
+                .stream()
+                .map(deviceInfoDTOMapper)
+                .collect(Collectors.toList());
     }
     public List<Device> getAllByDeviceTypeId(Long deviceTypeId) {
         return deviceRepository.findAllByDeviceTypeId(deviceTypeId);

@@ -136,16 +136,10 @@ public class StudioService {
         return studioRepository.getReferenceById(id);
     }
 
-    public StudioInfo getInfoById(Long id){
+  /*  public StudioInfo getInfoById(Long id){
         return StudioToStudioInfo(studioRepository.getReferenceById(id));
-    }
+    }*/
 
-    public StudioInfo StudioToStudioInfo(Studio studio){
-        return StudioInfo.builder()
-                .name(studio.getName())
-                .devices(deviceService.getAllByStudioId(studio.getId()))
-                .build();
-    }
 
     public boolean checkIfUserIsManager(Long user_id, Long studio_id){
         checkIfExist(studio_id);
