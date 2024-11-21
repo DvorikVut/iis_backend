@@ -26,7 +26,6 @@ public class Device {
     private String description;
     private Integer yearOfManufacture;
     private LocalDate purchaseDate;
-
     private Integer maximumLoanPeriodInHours;
     private Boolean forAll;
     private Boolean DisabledForBorrowing;

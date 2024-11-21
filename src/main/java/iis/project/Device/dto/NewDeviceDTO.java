@@ -1,7 +1,5 @@
 package iis.project.Device.dto;
 
-import iis.project.DeviceType.DeviceType;
-
 import java.time.LocalDate;
 
 public record NewDeviceDTO(

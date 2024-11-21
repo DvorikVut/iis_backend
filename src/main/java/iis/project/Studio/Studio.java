@@ -22,10 +22,18 @@ public class Studio {
 
     @ManyToMany
     @JoinTable(
+            name = "user_studio",
+            joinColumns = @JoinColumn(name = "studio_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    List<User> users;
+
+    @ManyToMany
+    @JoinTable(
             name = "teacher_studio",
             joinColumns = @JoinColumn(name = "studio_id"),
-            inverseJoinColumns = @JoinColumn(name = "teacher_id"))
-    List<User> users;
+            inverseJoinColumns = @JoinColumn(name = "teacher_id")
+    )
+    List<User> teachers;
 
     @ManyToOne
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
