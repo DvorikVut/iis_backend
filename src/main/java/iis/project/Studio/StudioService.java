@@ -29,7 +29,7 @@ public class StudioService {
     private final UserInfoDTOMapper userInfoDTOMapper;
 
 
-    public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository, StudioInfoDTOMapper studioInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper){
+    public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository,@Lazy  StudioInfoDTOMapper studioInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper){
         this.studioRepository = studioRepository;
         this.userService = userService;
         this.deviceService = deviceService;
