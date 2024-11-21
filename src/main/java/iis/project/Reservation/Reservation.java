@@ -29,12 +29,10 @@ public class Reservation {
     private LocalDateTime actualEndDateTime;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "device_id", referencedColumnName = "id", nullable = false)
     private Device device;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 }

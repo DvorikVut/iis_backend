@@ -7,6 +7,8 @@ import iis.project.Exceptions.BadRequestException;
 import iis.project.Exceptions.NotAuthorizedException;
 import iis.project.Exceptions.ResourceNotFoundException;
 import iis.project.Reservation.dto.NewReservationDTO;
+import iis.project.Reservation.dto.ReservationInfoDTO;
+import iis.project.Reservation.dto.ReservationInfoDTOMapper;
 import iis.project.User.Role;
 import iis.project.User.User;
 import iis.project.User.UserService;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final DeviceService deviceService;
     private final UserService userService;
+    private final ReservationInfoDTOMapper reservationInfoDTOMapper;
 
     public Reservation create(NewReservationDTO newReservationDTO) {
         User user = userService.getCurrentUser();
@@ -86,11 +90,18 @@ public class ReservationService {
             throw new BadRequestException("Reservation overlaps with others");
 
     }
-    public List<Reservation> getAllByDeviceId(Long deviceId){
-        return reservationRepository.findAllByDeviceId(deviceId);
+    public List<ReservationInfoDTO> getAllByDeviceId(Long deviceId){
+        return reservationRepository.findAllByDeviceId(deviceId)
+                .stream()
+                .map(reservationInfoDTOMapper)
+                .collect(Collectors.toList());
     }
-    public List<Reservation> getAllByUserId(Long userId){
-        return reservationRepository.findAllByUserId(userId);
+
+    public List<ReservationInfoDTO> getAllByUserId(Long userId){
+        return reservationRepository.findAllByUserId(userId)
+                .stream()
+                .map(reservationInfoDTOMapper)
+                .collect(Collectors.toList());
     }
     public void changeStatus(Long reservationId, ReservationStatus newStatus){
         Reservation reservation = getById(reservationId);
