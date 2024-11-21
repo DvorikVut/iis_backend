@@ -1,9 +1,12 @@
 package iis.project.Device.dto;
 
 import iis.project.Device.Device;
+import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+
+@Service
 public class DeviceInfoDTOMapper implements Function<Device,DeviceInfoDTO>{
 
     @Override
