@@ -33,9 +33,16 @@ public class ReservationController {
         return ResponseEntity.ok("Status was changed successfully");
     }
 
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody NewReservationDTO newReservationDTO){
+        return ResponseEntity.ok(reservationService.create(newReservationDTO));
+    }
+
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<?> delete(@PathVariable Long reservationId){
         reservationService.delete(reservationId);
         return ResponseEntity.ok("Reservation was deleted successfully");
     }
+
+
 }
