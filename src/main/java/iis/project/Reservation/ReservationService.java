@@ -27,7 +27,7 @@ public class ReservationService {
     private final UserService userService;
     private final ReservationInfoDTOMapper reservationInfoDTOMapper;
 
-    public Reservation create(NewReservationDTO newReservationDTO) {
+    public ReservationInfoDTO create(NewReservationDTO newReservationDTO) {
         User user = userService.getCurrentUser();
 
         deviceService.checkIfExist(newReservationDTO.device_id());
@@ -46,7 +46,7 @@ public class ReservationService {
                 .endDateTime(newReservationDTO.endDateTime())
                 .status(ReservationStatus.RESERVED)
                 .build();
-        return save(reservation);
+        return reservationInfoDTOMapper.apply(save(reservation));
     }
     public void delete(Long reservation_id){
         Reservation reservation = getById(reservation_id);

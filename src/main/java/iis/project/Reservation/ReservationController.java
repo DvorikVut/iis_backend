@@ -43,6 +43,4 @@ public class ReservationController {
         reservationService.delete(reservationId);
         return ResponseEntity.ok("Reservation was deleted successfully");
     }
-
-
 }
