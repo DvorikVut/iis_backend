@@ -17,6 +17,7 @@ public class ReservationInfoDTOMapper implements Function<Reservation, Reservati
                 .status(reservation.getStatus())
                 .userId(reservation.getUser().getId())
                 .deviceId(reservation.getDevice().getId())
+                .deviceName(reservation.getDevice().getName())
                 .build();
     }
 }

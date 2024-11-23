@@ -14,6 +14,7 @@ public record ReservationInfoDTO(
         LocalDateTime actualStartDateTime,
         LocalDateTime actualEndDateTime,
         Long userId,
-        Long deviceId
+        Long deviceId,
+        String deviceName
 ) {
 }
