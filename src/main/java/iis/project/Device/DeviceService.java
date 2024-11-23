@@ -15,11 +15,13 @@ import iis.project.Studio.StudioService;
 import iis.project.User.Role;
 import iis.project.User.User;
 import iis.project.User.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,7 +60,7 @@ public class DeviceService {
                 .description(newDeviceDTO.description())
                 .yearOfManufacture(newDeviceDTO.yearOfManufacture())
                 .purchaseDate(newDeviceDTO.purchaseDate())
-                .users(new ArrayList<>())
+                .users(new ArrayList<User>())
                 .maximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours())
                 .studio(studioService.getById(newDeviceDTO.studio_id()))
                 .DisabledForBorrowing(false)
@@ -136,14 +138,14 @@ public class DeviceService {
             }
         }
     }
+    @Transactional
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
-
         List<User> usersInStudio = device.getStudio().getUsers();
         for (User user : usersInStudio) {
-            myLogger.logInfo(device.getUsers().stream().toString());
             device.getUsers().add(user);
         }
+        save(device);
     }
     public List<DeviceInfoDTO> getAllByStudioId(Long studio_id) {
         return deviceRepository.findAllByStudio(studioService.getById(studio_id))
