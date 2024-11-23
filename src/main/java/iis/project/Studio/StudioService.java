@@ -176,6 +176,13 @@ public class StudioService {
     public void addTeacher(Long userId, Long studioId) {
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
+
+        if(
+                !userService.getCurrentUser().getId().equals(studio.getManager().getId())
+                        && !userService.checkCurrentUserRole(Role.ADMIN)
+        )
+            throw new NotAuthorizedException("You are not allowed to add teachers to this studio");
+
         studio.getTeachers().add(user);
     }
 
@@ -183,7 +190,12 @@ public class StudioService {
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
 
-        //TODO: DO SOME SHIT WITH HIS DEVICES
+        if(
+                !userService.getCurrentUser().getId().equals(studio.getManager().getId())
+                && !userService.checkCurrentUserRole(Role.ADMIN)
+        )
+            throw new NotAuthorizedException("You are not allowed to remove teachers from this studio");
+
 
         studio.getTeachers().remove(user);
     }
