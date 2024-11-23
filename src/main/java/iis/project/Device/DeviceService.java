@@ -55,6 +55,7 @@ public class DeviceService {
                 .description(newDeviceDTO.description())
                 .yearOfManufacture(newDeviceDTO.yearOfManufacture())
                 .purchaseDate(newDeviceDTO.purchaseDate())
+                .users(new ArrayList<User>())
                 .maximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours())
                 .studio(studioService.getById(newDeviceDTO.studio_id()))
                 .DisabledForBorrowing(false)
