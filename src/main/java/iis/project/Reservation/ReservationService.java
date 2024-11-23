@@ -86,7 +86,7 @@ public class ReservationService {
     public void checkIfAvailable(LocalDateTime startDateTime, LocalDateTime endDateTime, Long device_id){
         Device device = deviceService.getById(device_id);
         List<Reservation> existedReservations = reservationRepository.findAllByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndDevice(startDateTime,endDateTime, device);
-        if(existedReservations.isEmpty())
+        if(!existedReservations.isEmpty())
             throw new BadRequestException("Reservation overlaps with others");
 
     }
