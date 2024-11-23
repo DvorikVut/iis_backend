@@ -13,6 +13,7 @@ public class UserInfoDTOMapper implements Function<User, UserInfo> {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
+                .role(user.getRole())
                 .build();
     }
 }
