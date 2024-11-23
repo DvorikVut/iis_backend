@@ -16,10 +16,9 @@ public class DeviceController {
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(deviceService.getAll());
     }
-
     @GetMapping("/{deviceId}")
     public ResponseEntity<?> getInfoById(@PathVariable Long deviceId){
-        return ResponseEntity.ok(deviceService.getById(deviceId));
+        return ResponseEntity.ok(deviceService.getInfoById(deviceId));
     }
     @GetMapping("/user")
     public ResponseEntity<?> getAllUserCanBorrow(){
