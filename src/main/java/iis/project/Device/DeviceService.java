@@ -7,6 +7,7 @@ import iis.project.DeviceType.DeviceTypeService;
 import iis.project.EmailSender.EmailSenderService;
 import iis.project.Exceptions.NotAuthorizedException;
 import iis.project.Exceptions.ResourceNotFoundException;
+import iis.project.Logger.MyLogger;
 import iis.project.Reservation.Reservation;
 import iis.project.Reservation.ReservationService;
 import iis.project.Studio.Studio;
@@ -33,8 +34,9 @@ public class DeviceService {
     private final ReservationService reservationService;
     private final EmailSenderService emailSenderService;
     private final DeviceInfoDTOMapper deviceInfoDTOMapper;
+    private final MyLogger myLogger;
 
-    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper) {
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, MyLogger myLogger) {
         this.deviceRepository = deviceRepository;
         this.userService = userService;
         this.deviceTypeService = deviceTypeService;
@@ -42,6 +44,7 @@ public class DeviceService {
         this.reservationService = reservationService;
         this.emailSenderService = emailSenderService;
         this.deviceInfoDTOMapper = deviceInfoDTOMapper;
+        this.myLogger = myLogger;
     }
 
     public Device create(NewDeviceDTO newDeviceDTO) {
@@ -55,7 +58,7 @@ public class DeviceService {
                 .description(newDeviceDTO.description())
                 .yearOfManufacture(newDeviceDTO.yearOfManufacture())
                 .purchaseDate(newDeviceDTO.purchaseDate())
-                .users(new ArrayList<User>())
+                .users(new ArrayList<>())
                 .maximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours())
                 .studio(studioService.getById(newDeviceDTO.studio_id()))
                 .DisabledForBorrowing(false)
@@ -135,8 +138,10 @@ public class DeviceService {
     }
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
+
         List<User> usersInStudio = device.getStudio().getUsers();
         for (User user : usersInStudio) {
+            myLogger.logInfo(device.getUsers().stream().toString());
             device.getUsers().add(user);
         }
     }
