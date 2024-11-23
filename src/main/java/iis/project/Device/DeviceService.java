@@ -34,7 +34,7 @@ public class DeviceService {
     private final EmailSenderService emailSenderService;
     private final DeviceInfoDTOMapper deviceInfoDTOMapper;
 
-    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, DeviceInfoDTOMapper deviceInfoDTOMapper) {
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper) {
         this.deviceRepository = deviceRepository;
         this.userService = userService;
         this.deviceTypeService = deviceTypeService;
