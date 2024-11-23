@@ -31,8 +31,8 @@ public class StudioController {
     }
 
     @PostMapping("/add-manager")
-    public ResponseEntity<?> addManager(@RequestBody Long user_id, @RequestBody Long studio_id){
-        studioService.addManager(user_id, studio_id);
+    public ResponseEntity<?> setManager(@RequestBody Long user_id, @RequestBody Long studio_id){
+        studioService.setManager(user_id, studio_id);
         return ResponseEntity.ok("Manager was successfully added");
     }
 
@@ -40,6 +40,12 @@ public class StudioController {
     public ResponseEntity<?> removeManager(@RequestBody Long studio_id) {
         studioService.removeManager(studio_id);
         return ResponseEntity.ok("Manager was successfully removed");
+    }
+
+    @PostMapping("/add-teacher")
+    public ResponseEntity<?> addTeacher(@RequestBody Long user_id, @RequestBody Long studio_id){
+        studioService.addTeacher(user_id, studio_id);
+        return ResponseEntity.ok("Manager was successfully added");
     }
 
     @PostMapping("/add-user")

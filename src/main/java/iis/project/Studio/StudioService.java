@@ -68,7 +68,7 @@ public class StudioService {
         return studio;
     }
 
-    public void addManager(Long user_id, Long studio_id){
+    public void setManager(Long user_id, Long studio_id){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to add manager to studio");
 
@@ -160,10 +160,31 @@ public class StudioService {
     }
 
     public List<UserInfo> getAllUsersInfoByStudioId(Long studioId){
-        return getById(studioId).getUsers().stream().map(userInfoDTOMapper).collect(Collectors.toList());
+        return getById(studioId).getUsers()
+                .stream()
+                .map(userInfoDTOMapper)
+                .collect(Collectors.toList());
 
     }
     public List<UserInfo> getAllTeachersInfoByStudioId(Long studioId){
-        return getById(studioId).getTeachers().stream().map(userInfoDTOMapper).collect(Collectors.toList());
+        return getById(studioId).getTeachers()
+                .stream()
+                .map(userInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
+
+    public void addTeacher(Long userId, Long studioId) {
+        Studio studio = getById(studioId);
+        User user = userService.getById(userId);
+        studio.getTeachers().add(user);
+    }
+
+    public void removeTeacher(Long userId, Long studioId){
+        Studio studio = getById(studioId);
+        User user = userService.getById(userId);
+
+        //TODO:
+
+        studio.getTeachers().remove(user);
     }
 }
