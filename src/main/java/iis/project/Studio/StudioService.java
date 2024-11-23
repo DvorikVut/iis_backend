@@ -43,7 +43,6 @@ public class StudioService {
         Studio studio = Studio.builder().name(newStudioDTO.name()).build();
         return save(studio);
     }
-
     public Studio save(Studio studio){
         return studioRepository.save(studio);
     }
@@ -55,7 +54,6 @@ public class StudioService {
         checkIfExist(studio_id);
         studioRepository.deleteById(studio_id);
     }
-
     public Studio change(Long studio_id, NewStudioDTO newStudioDTO){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to change studio");
@@ -67,7 +65,6 @@ public class StudioService {
         studioRepository.save(studio);
         return studio;
     }
-
     public void setManager(Long user_id, Long studio_id){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to add manager to studio");
@@ -81,7 +78,6 @@ public class StudioService {
         user.setRole(Role.STUDIO_MANAGER);
         save(studio);
     }
-
     public void removeManager(Long studio_id){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to remove manager from studio");
@@ -92,8 +88,6 @@ public class StudioService {
         studio.setManager(null);
         save(studio);
     }
-
-
     public void removeUser(Long studio_id, Long user_id){
         if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
             throw new NotAuthorizedException("You are not authorized to remove users from studio");
@@ -112,7 +106,6 @@ public class StudioService {
         studio.setUsers(users);
         save(studio);
     }
-
     public void addUser(Long studio_id, Long user_id){
         if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
             throw new NotAuthorizedException("You are not authorized to add users to the studio");
@@ -138,15 +131,12 @@ public class StudioService {
     public List<Studio> getAll() {
         return studioRepository.findAll();
     }
-
     public Studio getById(Long id) {
         return studioRepository.getReferenceById(id);
     }
-
     public StudioInfo getInfoById(Long id){
         return studioInfoDTOMapper.apply(studioRepository.getReferenceById(id));
     }
-
     public boolean checkIfUserIsManager(Long user_id, Long studio_id){
         checkIfExist(studio_id);
         userService.checkIfExist(user_id);
@@ -154,7 +144,6 @@ public class StudioService {
 
         return Objects.equals(studio.getManager().getId(), user_id);
     }
-
     public List<UserInfo> getAllUsersInfoByStudioId(Long studioId){
         return getById(studioId).getUsers()
                 .stream()
@@ -168,7 +157,6 @@ public class StudioService {
                 .map(userInfoDTOMapper)
                 .collect(Collectors.toList());
     }
-
     public void addTeacher(Long userId, Long studioId) {
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
@@ -209,6 +197,12 @@ public class StudioService {
             }
             case STUDIO_MANAGER -> {
                 return getAllByManagerId(user.getId());
+            }
+            case ADMIN -> {
+                return getAll()
+                        .stream()
+                        .map(studioInfoDTOMapper)
+                        .collect(Collectors.toList());
             }
             default -> throw new RuntimeException("Invalid User Role");
         }
