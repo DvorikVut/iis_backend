@@ -38,6 +38,8 @@ public class AuthService {
         var jwtToken = jwtService.generateToken(user);
         return AuthResponse.builder()
                 .token(jwtToken)
+                .id(user.getId())
+                .surname(user.getSurname())
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
