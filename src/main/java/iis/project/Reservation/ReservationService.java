@@ -27,6 +27,7 @@ public class ReservationService {
     private final UserService userService;
     private final ReservationInfoDTOMapper reservationInfoDTOMapper;
 
+
     public ReservationInfoDTO create(NewReservationDTO newReservationDTO) {
         User user = userService.getCurrentUser();
 
@@ -75,20 +76,11 @@ public class ReservationService {
     public Reservation save(Reservation reservation){
         return reservationRepository.save(reservation);
     }
-    public List<Reservation> getAll(){
-        return reservationRepository.findAll();
-    }
-    public void checkIfExist(Long reservation_id){
-        if(!reservationRepository.existsById(reservation_id)){
-            throw new ResourceNotFoundException("Reservation with ID " + reservation_id + " does not exist");
-        }
-    }
-    public void checkIfAvailable(LocalDateTime startDateTime, LocalDateTime endDateTime, Long device_id){
-        Device device = deviceService.getById(device_id);
-        List<Reservation> existedReservations = reservationRepository.findAllByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndDevice(startDateTime,endDateTime, device);
-        if(!existedReservations.isEmpty())
-            throw new BadRequestException("Reservation overlaps with others");
-
+    public List<ReservationInfoDTO> getAll(){
+        return reservationRepository.findAll()
+                .stream()
+                .map(reservationInfoDTOMapper)
+                .collect(Collectors.toList());
     }
     public List<ReservationInfoDTO> getAllByDeviceId(Long deviceId){
         return reservationRepository.findAllByDeviceId(deviceId)
@@ -102,17 +94,37 @@ public class ReservationService {
                 .map(reservationInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+    public List<Reservation> getFutureReservations(Long deviceId){
+        LocalDateTime now = LocalDateTime.now();
+        return reservationRepository.findAllByStartDateTimeLessThanEqualAndDeviceId(now, deviceId);
+    }
+    public void checkIfExist(Long reservation_id){
+        if(!reservationRepository.existsById(reservation_id)){
+            throw new ResourceNotFoundException("Reservation with ID " + reservation_id + " does not exist");
+        }
+    }
+    public void checkIfAvailable(LocalDateTime startDateTime, LocalDateTime endDateTime, Long device_id){
+        Device device = deviceService.getById(device_id);
+        List<Reservation> existedReservations = reservationRepository.findAllByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndDevice(startDateTime,endDateTime, device);
+        if(!existedReservations.isEmpty())
+            throw new BadRequestException("Reservation overlaps with others");
+
+    }
     public void changeStatus(Long reservationId, ReservationStatus newStatus){
         Reservation reservation = getById(reservationId);
         reservation.setStatus(newStatus);
+
+        if(newStatus == ReservationStatus.BORROWED && reservation.getStatus().equals(ReservationStatus.RESERVED))
+            reservation.setActualStartDateTime(LocalDateTime.now());
+
+        if(newStatus == ReservationStatus.RETURNED && reservation.getStatus().equals(ReservationStatus.BORROWED))
+            reservation.setActualEndDateTime(LocalDateTime.now());
+
         save(reservation);
     }
     public boolean canDeleteByCurrentTime(Long deviceId){
         LocalDateTime now = LocalDateTime.now();
         return !reservationRepository.existsByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndStatusAndDeviceId(now,now,ReservationStatus.BORROWED,deviceId);
     }
-    public List<Reservation> getFutureReservations(Long deviceId){
-        LocalDateTime now = LocalDateTime.now();
-        return reservationRepository.findAllByStartDateTimeLessThanEqualAndDeviceId(now, deviceId);
-    }
+
 }

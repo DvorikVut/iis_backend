@@ -16,13 +16,18 @@ public class DeviceController {
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(deviceService.getAll());
     }
+
+    @GetMapping("/{deviceId}")
+    public ResponseEntity<?> getInfoById(@PathVariable Long deviceId){
+        return ResponseEntity.ok(deviceService.getById(deviceId));
+    }
     @GetMapping("/user")
     public ResponseEntity<?> getAllUserCanBorrow(){
         return ResponseEntity.ok(deviceService.getAllByUserCanBorrow());
     }
-    @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<?> getAllByOwnerId(@PathVariable Long ownerId){
-        return ResponseEntity.ok(deviceService.getAllByOwnerId(ownerId));
+    @GetMapping("/owner")
+    public ResponseEntity<?> getAllByOwnerId(){
+        return ResponseEntity.ok(deviceService.getAllByOwnerId());
     }
     @PostMapping
     public ResponseEntity<?> create(@RequestBody NewDeviceDTO newDeviceDTO){

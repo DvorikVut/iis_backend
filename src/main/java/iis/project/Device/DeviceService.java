@@ -109,6 +109,10 @@ public class DeviceService {
     public Device getById(Long deviceId) {
         return deviceRepository.getReferenceById(deviceId);
     }
+
+    public DeviceInfoDTO getInfoById(Long deviceId){
+        return deviceInfoDTOMapper.apply(getById(deviceId));
+    }
     public void checkIfExist(Long device_id) {
         if (!deviceRepository.existsById(device_id)) {
             throw new ResourceNotFoundException("Device with ID " + device_id + " does not exist");
@@ -158,8 +162,9 @@ public class DeviceService {
                 .map(deviceInfoDTOMapper)
                 .collect(Collectors.toList());
     }
-    public List<DeviceInfoDTO> getAllByOwnerId(Long ownerId){
-        return deviceRepository.findAllByOwnerId(ownerId)
+    public List<DeviceInfoDTO> getAllByOwnerId(){
+        User owner = userService.getCurrentUser();
+        return deviceRepository.findAllByOwnerId(owner.getId())
                 .stream()
                 .map(deviceInfoDTOMapper)
                 .collect(Collectors.toList());

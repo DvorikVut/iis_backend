@@ -183,7 +183,7 @@ public class StudioService {
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
 
-        //TODO:
+        //TODO: DO SOME SHIT WITH HIS DEVICES
 
         studio.getTeachers().remove(user);
     }
