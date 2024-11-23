@@ -19,9 +19,6 @@ public class UserInfoDTOMapper implements Function<User, UserInfo> {
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole())
-                .studiosAsManager(studioService.getAllByManagerId(user.getId()))
-                .studiosAsUser(studioService.getAllByUserId(user.getId()))
-                .studiosAsTeacher(studioService.getAllByTeacherId(user.getId()))
                 .build();
     }
 }

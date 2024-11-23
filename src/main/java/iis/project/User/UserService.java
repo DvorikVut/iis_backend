@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepo userRepo;
     private final UserInfoDTOMapper userInfoDTOMapper;
+
+
+
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User) {
@@ -25,25 +28,20 @@ public class UserService {
             throw new RuntimeException("User ne user nah");
         }
     }
-
     public boolean checkCurrentUserRole(Role role){
         return getCurrentUser().getRole() == role;
     }
-
     public void checkIfExist(Long id){
         if(!userRepo.existsById(id)){
             throw new ResourceNotFoundException("User with this ID does not exist");
         }
     }
-
     public User getById(Long userId) {
         return userRepo.getReferenceById(userId);
     }
-
     public UserInfo getCurrentUserInfo() {
         return userInfoDTOMapper.apply(getCurrentUser());
     }
-
     public List<UserInfo> getAllByRole(Role role) {
         return userRepo.findAllByRole(role)
                 .stream()

@@ -12,9 +12,6 @@ public record UserInfo(
         String name,
         String surname,
         String email,
-        Role role,
-        List<StudioInfo> studiosAsManager,
-        List<StudioInfo> studiosAsUser,
-        List<StudioInfo> studiosAsTeacher
+        Role role
 ) {
 }

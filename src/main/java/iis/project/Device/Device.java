@@ -42,7 +42,6 @@ public class Device {
     @JoinColumn(name = "studio_id", referencedColumnName = "id", nullable = false)
     private Studio studio;
 
-
     @ManyToMany
     @JoinTable(
             name = "device_access",

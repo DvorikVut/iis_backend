@@ -196,6 +196,24 @@ public class StudioService {
         studio.getTeachers().remove(user);
     }
 
+    public List<StudioInfo> getAllByUser(){
+        User user = userService.getCurrentUser();
+        Role userRole = user.getRole();
+
+        switch (userRole){
+            case USER -> {
+                return getAllByUserId(user.getId());
+            }
+            case TEACHER -> {
+                return  getAllByTeacherId(user.getId());
+            }
+            case STUDIO_MANAGER -> {
+                return getAllByManagerId(user.getId());
+            }
+            default -> throw new RuntimeException("Invalid User Role");
+        }
+    }
+
     public List<StudioInfo> getAllByUserId(Long userId) {
         User user = userService.getById(userId);
         return studioRepository.findAllByUsersContaining(user)

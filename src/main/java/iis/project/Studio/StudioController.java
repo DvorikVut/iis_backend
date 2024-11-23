@@ -25,6 +25,11 @@ public class StudioController {
         return ResponseEntity.ok(studioService.getInfoById(id));
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<?> getAllByUser(){
+        return ResponseEntity.ok(studioService.getAllByUser());
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@RequestBody NewStudioDTO newStudioDTO){
         return ResponseEntity.ok(studioService.create(newStudioDTO));
