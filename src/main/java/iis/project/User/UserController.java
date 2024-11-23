@@ -16,4 +16,9 @@ public class UserController {
     public ResponseEntity<?> getProfile(){
         return ResponseEntity.ok(userService.getCurrentUserInfo());
     }
+
+    @GetMapping("/registered")
+    public ResponseEntity<?> getAllUsers(){
+        return ResponseEntity.ok(userService.getAllByRole(Role.USER));
+    }
 }
