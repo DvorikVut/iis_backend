@@ -33,6 +33,4 @@ public class DeviceHours {
     @ManyToOne
     @JoinColumn(name = "device_id", referencedColumnName = "id", nullable = false)
     private Device device;
-
-
 }

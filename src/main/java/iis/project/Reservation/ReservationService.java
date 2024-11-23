@@ -96,7 +96,6 @@ public class ReservationService {
                 .map(reservationInfoDTOMapper)
                 .collect(Collectors.toList());
     }
-
     public List<ReservationInfoDTO> getAllByUserId(Long userId){
         return reservationRepository.findAllByUserId(userId)
                 .stream()
