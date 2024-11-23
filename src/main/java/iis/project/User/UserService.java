@@ -5,10 +5,12 @@ import iis.project.Studio.StudioService;
 import iis.project.User.dto.UserInfo;
 import iis.project.User.dto.UserInfoDTOMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +42,12 @@ public class UserService {
 
     public UserInfo getCurrentUserInfo() {
         return userInfoDTOMapper.apply(getCurrentUser());
+    }
+
+    public List<UserInfo> getAllByRole(Role role) {
+        return userRepo.findAllByRole(role)
+                .stream()
+                .map(userInfoDTOMapper)
+                .collect(Collectors.toList());
     }
 }
