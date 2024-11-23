@@ -22,6 +22,7 @@ public record DeviceInfoDTO(
         Boolean forAll,
         Boolean DisabledForBorrowing,
         Long studioId,
+        Long ownerId,
         String studioName,
         List<DeviceHoursInfoDTO> hours
 ) {
