@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record ReservationInfoDTO(
+        Long id,
         LocalDateTime startDateTime,
         LocalDateTime endDateTime,
         ReservationStatus status,

@@ -10,6 +10,7 @@ public class ReservationInfoDTOMapper implements Function<Reservation, Reservati
     @Override
     public ReservationInfoDTO apply(Reservation reservation) {
         return ReservationInfoDTO.builder()
+                .id(reservation.getId())
                 .actualEndDateTime(reservation.getActualEndDateTime())
                 .actualStartDateTime(reservation.getActualStartDateTime())
                 .startDateTime(reservation.getStartDateTime())
