@@ -1,12 +1,17 @@
 package iis.project.User.dto;
 
+import iis.project.Studio.StudioService;
 import iis.project.User.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class UserInfoDTOMapper implements Function<User, UserInfo> {
+    private final StudioService studioService;
+
     @Override
     public UserInfo apply(User user) {
         return UserInfo.builder()
@@ -14,6 +19,9 @@ public class UserInfoDTOMapper implements Function<User, UserInfo> {
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole())
+                .studiosAsManager(studioService.getAllByManagerId(user.getId()))
+                .studiosAsUser(studioService.getAllByUserId(user.getId()))
+                .studiosAsTeacher(studioService.getAllByTeacherId(user.getId()))
                 .build();
     }
 }

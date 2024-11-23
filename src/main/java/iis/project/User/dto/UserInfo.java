@@ -1,7 +1,10 @@
 package iis.project.User.dto;
 
+import iis.project.Studio.dto.StudioInfo;
 import iis.project.User.Role;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record UserInfo(
@@ -9,6 +12,9 @@ public record UserInfo(
         String name,
         String surname,
         String email,
-        Role role
+        Role role,
+        List<StudioInfo> studiosAsManager,
+        List<StudioInfo> studiosAsUser,
+        List<StudioInfo> studiosAsTeacher
 ) {
 }

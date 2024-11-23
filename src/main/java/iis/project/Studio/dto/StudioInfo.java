@@ -9,6 +9,7 @@ import java.util.List;
 
 @Builder
 public record StudioInfo(
+        Long id,
         String name,
         List<DeviceInfoDTO> devicesInfo,
         List<UserInfo> users,

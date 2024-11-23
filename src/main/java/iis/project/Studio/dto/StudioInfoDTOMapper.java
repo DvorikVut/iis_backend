@@ -16,6 +16,7 @@ public class StudioInfoDTOMapper implements Function<Studio, StudioInfo> {
     @Override
     public StudioInfo apply(Studio studio) {
         return StudioInfo.builder()
+                .id(studio.getId())
                 .name(studio.getName())
                 .devicesInfo(deviceService.getAllByStudioId(studio.getId()))
                 .users(studioService.getAllUsersInfoByStudioId(studio.getId()))

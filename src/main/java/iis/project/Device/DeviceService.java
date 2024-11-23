@@ -134,7 +134,7 @@ public class DeviceService {
     }
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
-        List<User> usersInStudio = studioService.getAllUserByStudioId(device.getStudio().getId());
+        List<User> usersInStudio = device.getStudio().getUsers();
         for (User user : usersInStudio) {
             device.getUsers().add(user);
         }

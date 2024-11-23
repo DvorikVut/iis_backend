@@ -25,6 +25,7 @@ public class DeviceInfoDTOMapper implements Function<Device,DeviceInfoDTO>{
                 .forAll(device.getForAll())
                 .DisabledForBorrowing(device.getDisabledForBorrowing())
                 .studioId(device.getStudio().getId())
+                .deviceType(device.getDeviceType())
                 .studioName(device.getStudio().getName())
                 .hours(deviceHoursService.getAllByDeviceId(device.getId()))
                 .build();

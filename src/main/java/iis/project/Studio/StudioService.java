@@ -155,10 +155,6 @@ public class StudioService {
         return Objects.equals(studio.getManager().getId(), user_id);
     }
 
-    public List<User> getAllUserByStudioId(Long studioId){
-        return studioRepository.findUsersByStudioId(studioId);
-    }
-
     public List<UserInfo> getAllUsersInfoByStudioId(Long studioId){
         return getById(studioId).getUsers()
                 .stream()
@@ -198,5 +194,28 @@ public class StudioService {
 
 
         studio.getTeachers().remove(user);
+    }
+
+    public List<StudioInfo> getAllByUserId(Long userId) {
+        User user = userService.getById(userId);
+        return studioRepository.findAllByUsersContaining(user)
+                .stream()
+                .map(studioInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
+
+    public List<StudioInfo> getAllByTeacherId(Long teacherId) {
+        User user = userService.getById(teacherId);
+        return studioRepository.findAllByTeachersContaining(user)
+                .stream()
+                .map(studioInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
+
+    public List<StudioInfo> getAllByManagerId(Long managerId) {
+        return studioRepository.findAllByManagerId(managerId)
+                .stream()
+                .map(studioInfoDTOMapper)
+                .collect(Collectors.toList());
     }
 }
