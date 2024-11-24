@@ -27,6 +27,8 @@ public class StudioService {
     private final UserInfoDTOMapper userInfoDTOMapper;
 
 
+
+
     public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository,@Lazy  StudioInfoDTOMapper studioInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper){
         this.studioRepository = studioRepository;
         this.userService = userService;
@@ -34,8 +36,6 @@ public class StudioService {
         this.studioInfoDTOMapper = studioInfoDTOMapper;
         this.userInfoDTOMapper = userInfoDTOMapper;
     }
-
-
     public Studio create(NewStudioDTO newStudioDTO){
         if(!userService.checkCurrentUserRole(Role.ADMIN)){
             throw new NotAuthorizedException("You are not authorized to create studio");
@@ -65,18 +65,20 @@ public class StudioService {
         studioRepository.save(studio);
         return studio;
     }
-    public void setManager(Long user_id, Long studio_id){
+    public void setManager(Long userId, Long studioId){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to add manager to studio");
 
-        userService.checkIfExist(user_id);
-        checkIfExist(studio_id);
+        userService.checkIfExist(userId);
+        checkIfExist(studioId);
 
-        Studio studio = getById(studio_id);
-        User user = userService.getById(user_id);
+        Studio studio = getById(studioId);
+        User user = userService.getById(userId);
         studio.setManager(user);
         user.setRole(Role.STUDIO_MANAGER);
         save(studio);
+
+        deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
     public void removeManager(Long studio_id){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
@@ -84,9 +86,11 @@ public class StudioService {
 
         checkIfExist(studio_id);
         Studio studio = getById(studio_id);
+        User user = studio.getManager();
         studio.getManager().setRole(Role.USER);
         studio.setManager(null);
         save(studio);
+        deviceService.removeUserFromUserAccess(user.getId(), studio_id);
     }
     public void removeUser(Long studio_id, Long user_id){
         if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
@@ -168,8 +172,8 @@ public class StudioService {
             throw new NotAuthorizedException("You are not allowed to add teachers to this studio");
 
         studio.getTeachers().add(user);
+        deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
-
     public void removeTeacher(Long userId, Long studioId){
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
@@ -180,10 +184,9 @@ public class StudioService {
         )
             throw new NotAuthorizedException("You are not allowed to remove teachers from this studio");
 
-
         studio.getTeachers().remove(user);
+        deviceService.removeUserFromUserAccess(userId,studioId);
     }
-
     public List<StudioInfo> getAllByUser(){
         User user = userService.getCurrentUser();
         Role userRole = user.getRole();
@@ -207,7 +210,6 @@ public class StudioService {
             default -> throw new RuntimeException("Invalid User Role");
         }
     }
-
     public List<StudioInfo> getAllByUserId(Long userId) {
         User user = userService.getById(userId);
         return studioRepository.findAllByUsersContaining(user)
@@ -215,7 +217,6 @@ public class StudioService {
                 .map(studioInfoDTOMapper)
                 .collect(Collectors.toList());
     }
-
     public List<StudioInfo> getAllByTeacherId(Long teacherId) {
         User user = userService.getById(teacherId);
         return studioRepository.findAllByTeachersContaining(user)
@@ -223,11 +224,11 @@ public class StudioService {
                 .map(studioInfoDTOMapper)
                 .collect(Collectors.toList());
     }
-
     public List<StudioInfo> getAllByManagerId(Long managerId) {
         return studioRepository.findAllByManagerId(managerId)
                 .stream()
                 .map(studioInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+
 }
