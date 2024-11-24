@@ -109,7 +109,6 @@ public class DeviceService {
         device.setDescription(newDeviceDTO.description());
         device.setPurchaseDate(newDeviceDTO.purchaseDate());
         device.setYearOfManufacture(newDeviceDTO.yearOfManufacture());
-
         save(device);
     }
 
@@ -169,8 +168,10 @@ public class DeviceService {
                 .collect(Collectors.toList());
     }
 
-    //Get all the devices that current user can borrow
     public List<DeviceInfoDTO> getAllByUserCanBorrow(){
+        if(userService.checkCurrentUserRole(Role.ADMIN))
+            return getAll();
+
         return deviceRepository.findAllByUsersContaining(userService.getById(userService.getCurrentUser().getId()))
                 .stream()
                 .map(deviceInfoDTOMapper)
