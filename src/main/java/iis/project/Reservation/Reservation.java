@@ -1,7 +1,5 @@
 package iis.project.Reservation;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import iis.project.Device.Device;
 import iis.project.User.User;
 import jakarta.persistence.*;

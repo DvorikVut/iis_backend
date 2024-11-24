@@ -186,6 +186,7 @@ public class DeviceService {
                 .collect(Collectors.toList());
     }
     public boolean checkIfCanBorrow(Long userId, Long deviceId){
+        if(userService.checkCurrentUserRole(Role.ADMIN)) return true;
         Device device = deviceService.getById(deviceId);
         return deviceRepository.existsByIdAndUsersContaining(deviceId, userService.getById(userId)) && !device.getDisabledForBorrowing();
     }
