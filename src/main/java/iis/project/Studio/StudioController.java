@@ -31,9 +31,9 @@ public class StudioController {
     public ResponseEntity<?> create(@RequestBody NewStudioDTO newStudioDTO){
         return ResponseEntity.ok(studioService.create(newStudioDTO));
     }
-    @PostMapping("/add-manager")
-    public ResponseEntity<?> setManager(@RequestBody Long user_id, @RequestBody Long studio_id){
-        studioService.setManager(user_id, studio_id);
+    @PostMapping("/add-manager/{userId}/{studioId}")
+    public ResponseEntity<?> setManager(@PathVariable Long userId, @PathVariable Long studioId){
+        studioService.setManager(userId, studioId);
         return ResponseEntity.ok("Manager was successfully added");
     }
     @PostMapping("/remove-manager")
@@ -46,19 +46,19 @@ public class StudioController {
         studioService.addTeacher(userId, studioId);
         return ResponseEntity.ok("Teacher was successfully added");
     }
-    @PostMapping("/remove-teacher")
-    public ResponseEntity<?> removeTeacher(@RequestBody Long user_id, @RequestBody Long studio_id){
-        studioService.removeTeacher(user_id, studio_id);
+    @PostMapping("/remove-teacher/{userId}/{studioId}")
+    public ResponseEntity<?> removeTeacher(@PathVariable Long userId, @PathVariable Long studioId){
+        studioService.removeTeacher(userId, studioId);
         return ResponseEntity.ok("Teacher was successfully removed");
     }
-    @PostMapping("/add-user")
-    public ResponseEntity<?> addUser(@RequestBody Long user_id, @RequestBody Long studio_id){
-        studioService.addUser(user_id, studio_id);
+    @PostMapping("/add-user/{userId}/{studioId}")
+    public ResponseEntity<?> addUser(@PathVariable Long userId, @PathVariable Long studioId){
+        studioService.addUser(userId, studioId);
         return ResponseEntity.ok("User was successfully added");
     }
-    @PostMapping("/remove-user")
-    public ResponseEntity<?> removeUser(@RequestBody Long user_id, @RequestBody Long studio_id){
-        studioService.removeUser(user_id, studio_id);
+    @PostMapping("/remove-user/{userId}/{studioId}")
+    public ResponseEntity<?> removeUser(@PathVariable Long userId, @PathVariable Long studioId){
+        studioService.removeUser(userId, studioId);
         return ResponseEntity.ok("User was successfully removed");
     }
     @DeleteMapping("/{id}")
