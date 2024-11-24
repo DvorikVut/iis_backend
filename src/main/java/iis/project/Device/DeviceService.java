@@ -69,9 +69,13 @@ public class DeviceService {
                 .build();
         save(device);
 
-        if (device.getForAll())
-            allowDeviceToAllUsersInStudio(device.getId());
-
+        if (device.getForAll()) {
+            try {
+                allowDeviceToAllUsersInStudio(device.getId());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
         return deviceInfoDTOMapper.apply(device);
     }
 
@@ -139,6 +143,7 @@ public class DeviceService {
         }
     }
 
+    @Transactional
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
         List<User> usersInDevice = device.getUsers();
