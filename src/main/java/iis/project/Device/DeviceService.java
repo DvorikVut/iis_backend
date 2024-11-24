@@ -138,13 +138,13 @@ public class DeviceService {
             }
         }
     }
-    @Transactional
+
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
+        List<User> usersInDevice = device.getUsers();
         List<User> usersInStudio = device.getStudio().getUsers();
-        for (User user : usersInStudio) {
-            device.getUsers().add(user);
-        }
+        usersInDevice.addAll(usersInStudio);
+        device.setUsers(usersInDevice);
         save(device);
     }
     public List<DeviceInfoDTO> getAllByStudioId(Long studio_id) {
