@@ -9,6 +9,7 @@ import iis.project.Studio.dto.StudioInfo;
 import iis.project.Studio.dto.StudioInfoDTOMapper;
 import iis.project.User.Role;
 import iis.project.User.User;
+import iis.project.User.UserEntityListener;
 import iis.project.User.UserService;
 import iis.project.User.dto.UserInfo;
 import iis.project.User.dto.UserInfoDTOMapper;
@@ -26,8 +27,7 @@ public class StudioService {
     private final StudioInfoDTOMapper studioInfoDTOMapper;
     private final UserInfoDTOMapper userInfoDTOMapper;
 
-
-    public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository,@Lazy  StudioInfoDTOMapper studioInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper){
+    public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository, @Lazy  StudioInfoDTOMapper studioInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper){
         this.studioRepository = studioRepository;
         this.userService = userService;
         this.deviceService = deviceService;
@@ -219,30 +219,31 @@ public class StudioService {
         if (!studio.users.contains(user)) {
             studio.users.add(user);
             user.getStudiosAsUser().add(studio);
+            user.setRole(user.getRole());
             userService.save(user);
         }
     }
-
     public void removeUserFromList(Studio studio, User user) {
         if (studio.users.contains(user)) {
             studio.users.remove(user);
             user.getStudiosAsUser().remove(studio);
+            user.setRole(user.getRole());
             userService.save(user);
         }
     }
-
     public void addTeacherToList(Studio studio, User user) {
         if (!studio.teachers.contains(user)) {
             studio.teachers.add(user);
             user.getStudiosAsTeacher().add(studio);
+            user.setRole(user.getRole());
             userService.save(user);
         }
     }
-
     public void removeTeacherFromList(Studio studio, User user) {
         if (studio.teachers.contains(user)) {
             studio.teachers.remove(user);
             user.getStudiosAsTeacher().remove(studio);
+            user.setRole(user.getRole());
             userService.save(user);
         }
     }
@@ -250,6 +251,7 @@ public class StudioService {
         if (!studio.getManager().equals(user)) {
             studio.setManager(user);
             user.getManagedStudios().add(studio);
+            user.setRole(user.getRole());
             userService.save(user);
         }
     }
@@ -257,6 +259,7 @@ public class StudioService {
         if (studio.getManager().equals(user)) {
             studio.setManager(null);
             user.getManagedStudios().remove(studio);
+            user.setRole(user.getRole());
             userService.save(user);
         }
     }
