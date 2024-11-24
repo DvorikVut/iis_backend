@@ -52,4 +52,19 @@ public class UserService {
     public void save(User user) {
         userRepo.save(user);
     }
+
+    public void handleRole(Long userId){
+        User user = getById(userId);
+
+        boolean hasTeacherRoles = user.getStudiosAsTeacher() != null && !user.getStudiosAsTeacher().isEmpty();
+        boolean hasManagerRoles = user.getManagedStudios() != null && !user.getManagedStudios().isEmpty();
+
+        if(hasTeacherRoles)
+            user.setRole(Role.TEACHER);
+        else if (hasManagerRoles)
+            user.setRole(Role.STUDIO_MANAGER);
+        else user.setRole(Role.USER);
+
+        save(user);
+    }
 }

@@ -29,4 +29,5 @@ public class UserController {
 
     @GetMapping("/managers")
     public ResponseEntity<?> getAllManagers(){ return ResponseEntity.ok(userService.getAllByRole(Role.STUDIO_MANAGER));}
+
 }

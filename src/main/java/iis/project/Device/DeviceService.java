@@ -15,6 +15,8 @@ import iis.project.Studio.StudioService;
 import iis.project.User.Role;
 import iis.project.User.User;
 import iis.project.User.UserService;
+import iis.project.User.dto.UserInfo;
+import iis.project.User.dto.UserInfoDTOMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -37,10 +39,12 @@ public class DeviceService {
     private final ReservationService reservationService;
     private final EmailSenderService emailSenderService;
     private final DeviceInfoDTOMapper deviceInfoDTOMapper;
+    private final UserInfoDTOMapper userInfoDTOMapper;
     private final DeviceService deviceService;
+
     private final MyLogger myLogger;
 
-    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, @Lazy DeviceService deviceService, MyLogger myLogger) {
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper, @Lazy DeviceService deviceService, MyLogger myLogger) {
         this.deviceRepository = deviceRepository;
         this.userService = userService;
         this.deviceTypeService = deviceTypeService;
@@ -48,6 +52,7 @@ public class DeviceService {
         this.reservationService = reservationService;
         this.emailSenderService = emailSenderService;
         this.deviceInfoDTOMapper = deviceInfoDTOMapper;
+        this.userInfoDTOMapper = userInfoDTOMapper;
         this.deviceService = deviceService;
         this.myLogger = myLogger;
     }
@@ -211,5 +216,13 @@ public class DeviceService {
         usersInDevice.addAll(usersToAdd);
         device.setUsers(usersInDevice);
         save(device);
+    }
+
+    public List<UserInfo> getAllUsersThatCanBorrowDevice(Long deviceId) {
+        Device device = getById(deviceId);
+        return device.getUsers()
+                .stream()
+                .map(userInfoDTOMapper)
+                .collect(Collectors.toList());
     }
 }

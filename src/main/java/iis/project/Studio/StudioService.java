@@ -9,7 +9,6 @@ import iis.project.Studio.dto.StudioInfo;
 import iis.project.Studio.dto.StudioInfoDTOMapper;
 import iis.project.User.Role;
 import iis.project.User.User;
-import iis.project.User.UserEntityListener;
 import iis.project.User.UserService;
 import iis.project.User.dto.UserInfo;
 import iis.project.User.dto.UserInfoDTOMapper;
@@ -63,54 +62,6 @@ public class StudioService {
         studioRepository.save(studio);
         return studio;
     }
-    public void setManager(Long userId, Long studioId){
-        if(!userService.checkCurrentUserRole(Role.ADMIN))
-            throw new NotAuthorizedException("You are not authorized to add manager to studio");
-        userService.checkIfExist(userId);
-        checkIfExist(studioId);
-        Studio studio = getById(studioId);
-        User user = userService.getById(userId);
-        addManagerHELP(studio,user);
-        save(studio);
-        deviceService.allowUserToAllDevicesInStudio(userId,studioId);
-    }
-    public void removeManager(Long studio_id){
-        if(!userService.checkCurrentUserRole(Role.ADMIN))
-            throw new NotAuthorizedException("You are not authorized to remove manager from studio");
-        checkIfExist(studio_id);
-        Studio studio = getById(studio_id);
-        User user = studio.getManager();
-        removeManagerHELP(studio,user);
-        save(studio);
-        deviceService.removeUserFromUserAccess(user.getId(), studio_id);
-    }
-    public void removeUser(Long studio_id, Long user_id){
-        if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
-            throw new NotAuthorizedException("You are not authorized to remove users from studio");
-        checkIfExist(studio_id);
-        userService.checkIfExist(user_id);
-        Studio studio = getById(studio_id);
-        User user = userService.getById(user_id);
-        removeUserFromList(studio,user);
-        save(studio);
-    }
-    public void addUser(Long studio_id, Long user_id){
-        if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
-            throw new NotAuthorizedException("You are not authorized to add users to the studio");
-
-        checkIfExist(studio_id);
-        userService.checkIfExist(user_id);
-
-
-        Studio studio = getById(studio_id);
-        User user = userService.getById(user_id);
-        if(studio.getUsers().contains(user))
-            throw new ResourceAlreadyExistException("User " + user.getEmail() + "is already in studio " + studio.getName());
-
-        addUserToList(studio,user);
-        save(studio);
-        deviceService.allowUserToAllDevicesInStudio(user_id,studio_id);
-    }
     public void checkIfExist(Long studio_id){
         if(!studioRepository.existsById(studio_id)){
             throw new ResourceNotFoundException("Studio with ID " + studio_id +" does not exist");
@@ -143,6 +94,57 @@ public class StudioService {
                 .map(userInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+    public void setManager(Long userId, Long studioId){
+        if(!userService.checkCurrentUserRole(Role.ADMIN))
+            throw new NotAuthorizedException("You are not authorized to add manager to studio");
+        userService.checkIfExist(userId);
+        checkIfExist(studioId);
+        Studio studio = getById(studioId);
+        User user = userService.getById(userId);
+        studio.setManager(user);
+        save(studio);
+        userService.handleRole(userId);
+        deviceService.allowUserToAllDevicesInStudio(userId,studioId);
+    }
+    public void removeManager(Long studio_id){
+        if(!userService.checkCurrentUserRole(Role.ADMIN))
+            throw new NotAuthorizedException("You are not authorized to remove manager from studio");
+        checkIfExist(studio_id);
+        Studio studio = getById(studio_id);
+        User user = studio.getManager();
+        studio.setManager(null);
+        save(studio);
+        userService.handleRole(user.getId());
+        deviceService.removeUserFromUserAccess(user.getId(), studio_id);
+    }
+    public void removeUser(Long studio_id, Long user_id){
+        if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
+            throw new NotAuthorizedException("You are not authorized to remove users from studio");
+        checkIfExist(studio_id);
+        userService.checkIfExist(user_id);
+        Studio studio = getById(studio_id);
+        User user = userService.getById(user_id);
+        studio.getUsers().remove(user);
+        save(studio);
+        userService.handleRole(user.getId());
+        deviceService.removeUserFromUserAccess(user.getId(), studio_id);
+    }
+    public void addUser(Long studioId, Long userId){
+        if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
+            throw new NotAuthorizedException("You are not authorized to add users to the studio");
+
+        checkIfExist(studioId);
+        userService.checkIfExist(userId);
+        Studio studio = getById(studioId);
+        User user = userService.getById(userId);
+        if(studio.getUsers().contains(user))
+            throw new ResourceAlreadyExistException("User " + user.getEmail() + "is already in studio " + studio.getName());
+
+        studio.getUsers().add(user);
+        save(studio);
+        userService.handleRole(userId);
+        deviceService.allowUserToAllDevicesInStudio(userId,studioId);
+    }
     public void addTeacher(Long userId, Long studioId) {
         Studio studio = getById(studioId);
         User newTeacher = userService.getById(userId);
@@ -150,8 +152,9 @@ public class StudioService {
                         && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to add teachers to this studio");
         deleteUserFromEveryStudiosAsUser(userId);
-        addTeacherToList(studio,newTeacher);
+        studio.getTeachers().add(newTeacher);
         save(studio);
+        userService.handleRole(userId);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
     public void removeTeacher(Long userId, Long studioId){
@@ -160,8 +163,9 @@ public class StudioService {
         if(!userService.getCurrentUser().getId().equals(studio.getManager().getId())
                 && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to remove teachers from this studio");
-        removeTeacherFromList(studio,user);
+        studio.getTeachers().remove(user);
         save(studio);
+        userService.handleRole(userId);
         deviceService.removeUserFromUserAccess(userId,studioId);
     }
     public List<StudioInfo> getAllByUser(){
@@ -213,54 +217,6 @@ public class StudioService {
         for(Studio studio : studios){
             studio.getUsers().remove(user);
             save(studio);
-        }
-    }
-    public void addUserToList(Studio studio, User user) {
-        if (!studio.users.contains(user)) {
-            studio.users.add(user);
-            user.getStudiosAsUser().add(studio);
-            user.setRole(user.getRole());
-            userService.save(user);
-        }
-    }
-    public void removeUserFromList(Studio studio, User user) {
-        if (studio.users.contains(user)) {
-            studio.users.remove(user);
-            user.getStudiosAsUser().remove(studio);
-            user.setRole(user.getRole());
-            userService.save(user);
-        }
-    }
-    public void addTeacherToList(Studio studio, User user) {
-        if (!studio.teachers.contains(user)) {
-            studio.teachers.add(user);
-            user.getStudiosAsTeacher().add(studio);
-            user.setRole(user.getRole());
-            userService.save(user);
-        }
-    }
-    public void removeTeacherFromList(Studio studio, User user) {
-        if (studio.teachers.contains(user)) {
-            studio.teachers.remove(user);
-            user.getStudiosAsTeacher().remove(studio);
-            user.setRole(user.getRole());
-            userService.save(user);
-        }
-    }
-    public void addManagerHELP(Studio studio, User user) {
-        if (!studio.getManager().equals(user)) {
-            studio.setManager(user);
-            user.getManagedStudios().add(studio);
-            user.setRole(user.getRole());
-            userService.save(user);
-        }
-    }
-    public void removeManagerHELP(Studio studio, User user) {
-        if (studio.getManager().equals(user)) {
-            studio.setManager(null);
-            user.getManagedStudios().remove(studio);
-            user.setRole(user.getRole());
-            userService.save(user);
         }
     }
 }

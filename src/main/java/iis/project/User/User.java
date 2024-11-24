@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(UserEntityListener.class)
 @Table(name = "_user")
 
 public class User implements UserDetails {
