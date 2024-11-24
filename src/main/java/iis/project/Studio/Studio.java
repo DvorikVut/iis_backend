@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,19 +22,21 @@ public class Studio {
     private String name;
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(
             name = "user_studio",
             joinColumns = @JoinColumn(name = "studio_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    List<User> users;
+    List<User> users = new ArrayList<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(
             name = "teacher_studio",
             joinColumns = @JoinColumn(name = "studio_id"),
             inverseJoinColumns = @JoinColumn(name = "teacher_id")
     )
-    List<User> teachers;
+    List<User> teachers = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
