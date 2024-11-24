@@ -83,8 +83,8 @@ public class StudioService {
         Studio studio = getById(studio_id);
         User user = studio.getManager();
         studio.setManager(null);
-        userService.save(user);
         save(studio);
+        userService.save(user);
         deviceService.removeUserFromUserAccess(user.getId(), studio_id);
     }
     public void removeUser(Long studio_id, Long user_id){
@@ -170,8 +170,8 @@ public class StudioService {
                 && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to remove teachers from this studio");
         studio.getTeachers().remove(user);
-        userService.save(user);
         save(studio);
+        userService.save(user);
         deviceService.removeUserFromUserAccess(userId,studioId);
     }
     public List<StudioInfo> getAllByUser(){
