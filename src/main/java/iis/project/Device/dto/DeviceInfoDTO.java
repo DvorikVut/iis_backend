@@ -20,7 +20,7 @@ public record DeviceInfoDTO(
         DeviceType deviceType,
         Integer maximumLoanPeriodInHours,
         Boolean forAll,
-        Boolean DisabledForBorrowing,
+        Boolean disabledForBorrowing,
         Long studioId,
         Long ownerId,
         String studioName,

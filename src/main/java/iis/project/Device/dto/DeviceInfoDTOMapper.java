@@ -23,7 +23,7 @@ public class DeviceInfoDTOMapper implements Function<Device,DeviceInfoDTO>{
                 .yearOfManufacture(device.getYearOfManufacture())
                 .maximumLoanPeriodInHours(device.getMaximumLoanPeriodInHours())
                 .forAll(device.getForAll())
-                .DisabledForBorrowing(device.getDisabledForBorrowing())
+                .disabledForBorrowing(device.getDisabledForBorrowing())
                 .studioId(device.getStudio().getId())
                 .deviceType(device.getDeviceType())
                 .ownerId(device.getOwner().getId())

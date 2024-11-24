@@ -72,7 +72,7 @@ public class DeviceService {
         if (device.getForAll())
             allowDeviceToAllUsersInStudio(device.getId());
 
-        return "Sucess";
+        return "Success";
     }
 
     public void delete(Long device_id) {
