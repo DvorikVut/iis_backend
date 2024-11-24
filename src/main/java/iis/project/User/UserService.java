@@ -65,4 +65,11 @@ public class UserService {
 
         save(user);
     }
+
+    public void update(UpdateProfileDTO updateProfileDTO) {
+        User user = getById(updateProfileDTO.userId());
+        user.setName(updateProfileDTO.name());
+        user.setSurname(updateProfileDTO.surname());
+        save(user);
+    }
 }

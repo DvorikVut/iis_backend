@@ -1,10 +1,10 @@
 package iis.project.User;
 
+import iis.project.Auth.RegisterRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.query.Jpa21Utils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,4 +30,9 @@ public class UserController {
     @GetMapping("/managers")
     public ResponseEntity<?> getAllManagers(){ return ResponseEntity.ok(userService.getAllByRole(Role.STUDIO_MANAGER));}
 
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody UpdateProfileDTO updateProfileDTO){
+        userService.update(updateProfileDTO);
+        return ResponseEntity.ok("Profile was updated successfully");
+    }
 }
