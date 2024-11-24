@@ -1,8 +1,7 @@
 package iis.project.User;
 
-import iis.project.Auth.RegisterRequest;
+import iis.project.User.dto.UpdateProfileDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.query.Jpa21Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

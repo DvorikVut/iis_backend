@@ -1,4 +1,4 @@
-package iis.project.User;
+package iis.project.User.dto;
 
 public record UpdateProfileDTO(
         Long userId,

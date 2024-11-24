@@ -1,11 +1,10 @@
 package iis.project.User;
 
 import iis.project.Exceptions.ResourceNotFoundException;
-import iis.project.Studio.StudioService;
+import iis.project.User.dto.UpdateProfileDTO;
 import iis.project.User.dto.UserInfo;
 import iis.project.User.dto.UserInfoDTOMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
