@@ -157,6 +157,7 @@ public class StudioService {
             throw new NotAuthorizedException("You are not allowed to add teachers to this studio");
         deleteUserFromEveryStudiosAsUser(userId);
         studio.getTeachers().add(user);
+        userService.save(user);
         save(studio);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
@@ -167,6 +168,7 @@ public class StudioService {
                 && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to remove teachers from this studio");
         studio.getTeachers().remove(user);
+        userService.save(user);
         save(studio);
         deviceService.removeUserFromUserAccess(userId,studioId);
     }

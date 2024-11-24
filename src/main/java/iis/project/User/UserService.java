@@ -48,4 +48,8 @@ public class UserService {
                 .map(userInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+
+    public void save(User user) {
+        userRepo.save(user);
+    }
 }
