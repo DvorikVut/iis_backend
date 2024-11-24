@@ -176,6 +176,7 @@ public class DeviceService {
 
         return deviceRepository.findAllByUsersContaining(userService.getById(userService.getCurrentUser().getId()))
                 .stream()
+                .filter(device -> !device.getDisabledForBorrowing())
                 .map(deviceInfoDTOMapper)
                 .collect(Collectors.toList());
     }
