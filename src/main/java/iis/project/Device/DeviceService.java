@@ -200,4 +200,16 @@ public class DeviceService {
     public List<Device> getAllByDeviceTypeId(Long deviceTypeId) {
         return deviceRepository.findAllByDeviceTypeId(deviceTypeId);
     }
+
+    public void addUsersToDevice(Long deviceId, List<Long> userIds){
+        Device device = getById(deviceId);
+        List<User> usersInDevice = device.getUsers();
+        List<User> usersToAdd = userIds.stream()
+                .map(userService::getById) // Получаем объект User для каждого ID
+                .toList();
+
+        usersInDevice.addAll(usersToAdd);
+        device.setUsers(usersInDevice);
+        save(device);
+    }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(UserEntityListener.class)
 @Table(name = "_user")
 
 public class User implements UserDetails {
@@ -44,5 +45,15 @@ public class User implements UserDetails {
             name = "user_studio",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "studio_id"))
-    List<Studio> studios;
+    List<Studio> studiosAsUser;
+
+    @ManyToMany
+    @JoinTable(
+            name = "teacher_studio",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "studio_id"))
+    List<Studio> studiosAsTeacher;
+
+    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Studio> managedStudios;
 }

@@ -27,8 +27,6 @@ public class StudioService {
     private final UserInfoDTOMapper userInfoDTOMapper;
 
 
-
-
     public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository,@Lazy  StudioInfoDTOMapper studioInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper){
         this.studioRepository = studioRepository;
         this.userService = userService;
@@ -71,23 +69,18 @@ public class StudioService {
 
         userService.checkIfExist(userId);
         checkIfExist(studioId);
-
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
         studio.setManager(user);
-        user.setRole(Role.STUDIO_MANAGER);
         save(studio);
-
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
     public void removeManager(Long studio_id){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to remove manager from studio");
-
         checkIfExist(studio_id);
         Studio studio = getById(studio_id);
         User user = studio.getManager();
-        studio.getManager().setRole(Role.USER);
         studio.setManager(null);
         save(studio);
         deviceService.removeUserFromUserAccess(user.getId(), studio_id);
@@ -98,14 +91,11 @@ public class StudioService {
 
         checkIfExist(studio_id);
         userService.checkIfExist(user_id);
-
         Studio studio = getById(studio_id);
         User user = userService.getById(user_id);
         List<User> users = studio.getUsers();
-
         if(!users.contains(user))
             throw new ResourceNotFoundException("User is not registered in this studio");
-
         users.remove(user);
         studio.setUsers(users);
         save(studio);
@@ -145,7 +135,6 @@ public class StudioService {
         checkIfExist(studio_id);
         userService.checkIfExist(user_id);
         Studio studio = getById(studio_id);
-
         return Objects.equals(studio.getManager().getId(), user_id);
     }
     public List<UserInfo> getAllUsersInfoByStudioId(Long studioId){
@@ -153,7 +142,6 @@ public class StudioService {
                 .stream()
                 .map(userInfoDTOMapper)
                 .collect(Collectors.toList());
-
     }
     public List<UserInfo> getAllTeachersInfoByStudioId(Long studioId){
         return getById(studioId).getTeachers()
@@ -164,28 +152,22 @@ public class StudioService {
     public void addTeacher(Long userId, Long studioId) {
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
-        user.setRole(Role.TEACHER);
-
-        if(
-                !userService.getCurrentUser().getId().equals(studio.getManager().getId())
-                        && !userService.checkCurrentUserRole(Role.ADMIN)
-        )
+        if(!userService.getCurrentUser().getId().equals(studio.getManager().getId())
+                        && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to add teachers to this studio");
-
+        deleteUserFromEveryStudiosAsUser(userId);
         studio.getTeachers().add(user);
+        save(studio);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
     public void removeTeacher(Long userId, Long studioId){
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
-
-        if(
-                !userService.getCurrentUser().getId().equals(studio.getManager().getId())
-                && !userService.checkCurrentUserRole(Role.ADMIN)
-        )
+        if(!userService.getCurrentUser().getId().equals(studio.getManager().getId())
+                && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to remove teachers from this studio");
-
         studio.getTeachers().remove(user);
+        save(studio);
         deviceService.removeUserFromUserAccess(userId,studioId);
     }
     public List<StudioInfo> getAllByUser(){
@@ -231,5 +213,12 @@ public class StudioService {
                 .map(studioInfoDTOMapper)
                 .collect(Collectors.toList());
     }
-
+    public void deleteUserFromEveryStudiosAsUser(Long userId){
+        User user = userService.getById(userId);
+        List<Studio> studios = studioRepository.findAllByUsersContaining(user);
+        for(Studio studio : studios){
+            studio.getUsers().remove(user);
+            save(studio);
+        }
+    }
 }
