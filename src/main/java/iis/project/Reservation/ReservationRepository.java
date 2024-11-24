@@ -13,5 +13,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     boolean existsByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndStatusAndDeviceId(LocalDateTime startDateTime, LocalDateTime endDateTime, ReservationStatus status, Long DeviceId);
     List<Reservation> findAllByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqualAndDevice(LocalDateTime startDateTime, LocalDateTime endDateTime, Device device);
     List<Reservation> findAllByUserId(Long userId);
-    List<Reservation> findAllByStartDateTimeLessThanEqualAndDeviceId(LocalDateTime startDateTime, Long deviceId);
+    List<Reservation> findAllByStartDateTimeGreaterThanEqualAndDeviceId(LocalDateTime startDateTime, Long deviceId);
+
 }
