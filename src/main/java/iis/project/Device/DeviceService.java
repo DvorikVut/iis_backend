@@ -140,7 +140,6 @@ public class DeviceService {
         }
     }
 
-    @Transactional
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
         Hibernate.initialize(device.getUsers());
@@ -151,6 +150,18 @@ public class DeviceService {
         device.setUsers(usersInDevice);
         save(device);
     }
+
+    public void removeUserFromUserAccess(Long userId, Long studioId){
+        Studio studio = studioService.getById(studioId);
+        User user = userService.getById(userId);
+        List<Device> devicesInStudio = deviceRepository.findAllByStudio(studio);
+        for (Device device : devicesInStudio) {
+                device.getUsers().remove(user);
+                save(device);
+        }
+    }
+
+
     public List<DeviceInfoDTO> getAllByStudioId(Long studio_id) {
         return deviceRepository.findAllByStudio(studioService.getById(studio_id))
                 .stream()
