@@ -37,9 +37,10 @@ public class DeviceService {
     private final ReservationService reservationService;
     private final EmailSenderService emailSenderService;
     private final DeviceInfoDTOMapper deviceInfoDTOMapper;
+    private final DeviceService deviceService;
     private final MyLogger myLogger;
 
-    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, MyLogger myLogger) {
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, @Lazy DeviceService deviceService, MyLogger myLogger) {
         this.deviceRepository = deviceRepository;
         this.userService = userService;
         this.deviceTypeService = deviceTypeService;
@@ -47,6 +48,7 @@ public class DeviceService {
         this.reservationService = reservationService;
         this.emailSenderService = emailSenderService;
         this.deviceInfoDTOMapper = deviceInfoDTOMapper;
+        this.deviceService = deviceService;
         this.myLogger = myLogger;
     }
 
@@ -178,7 +180,8 @@ public class DeviceService {
                 .collect(Collectors.toList());
     }
     public boolean checkIfCanBorrow(Long userId, Long deviceId){
-        return deviceRepository.existsByIdAndUsersContaining(deviceId, userService.getById(userId));
+        Device device = deviceService.getById(deviceId);
+        return deviceRepository.existsByIdAndUsersContaining(deviceId, userService.getById(userId)) && !device.getDisabledForBorrowing();
     }
     public List<DeviceInfoDTO> getAll() {
         return deviceRepository.findAll()
