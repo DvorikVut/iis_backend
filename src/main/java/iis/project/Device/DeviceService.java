@@ -50,7 +50,7 @@ public class DeviceService {
         this.myLogger = myLogger;
     }
 
-    public DeviceInfoDTO create(NewDeviceDTO newDeviceDTO) {
+    public String create(NewDeviceDTO newDeviceDTO) {
         if (!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.TEACHER)))) {
             throw new NotAuthorizedException("You are not authorized to create device");
         }
@@ -72,7 +72,7 @@ public class DeviceService {
         if (device.getForAll())
             allowDeviceToAllUsersInStudio(device.getId());
 
-        return deviceInfoDTOMapper.apply(device);
+        return "Success";
     }
 
     public void delete(Long device_id) {
