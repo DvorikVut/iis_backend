@@ -96,7 +96,7 @@ public class ReservationService {
     }
     public List<Reservation> getFutureReservations(Long deviceId){
         LocalDateTime now = LocalDateTime.now();
-        return reservationRepository.findAllByStartDateTimeLessThanEqualAndDeviceId(now, deviceId);
+        return reservationRepository.findAllByStartDateTimeGreaterThanEqualAndDeviceId(now, deviceId);
     }
     public void checkIfExist(Long reservation_id){
         if(!reservationRepository.existsById(reservation_id)){
