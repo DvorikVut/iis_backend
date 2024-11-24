@@ -22,6 +22,10 @@ public class DeviceController {
     public ResponseEntity<?> getInfoById(@PathVariable Long deviceId){
         return ResponseEntity.ok(deviceService.getInfoById(deviceId));
     }
+    @GetMapping("/users-can-borrow/{deviceId}")
+    public ResponseEntity<?> getUsersThatCanBorrowDevice(@PathVariable Long deviceId){
+        return ResponseEntity.ok(deviceService.getAllUsersThatCanBorrowDevice(deviceId));
+    }
     @GetMapping("/user")
     public ResponseEntity<?> getAllUserCanBorrow(){
         return ResponseEntity.ok(deviceService.getAllByUserCanBorrow());
@@ -34,13 +38,11 @@ public class DeviceController {
     public ResponseEntity<?> create(@RequestBody NewDeviceDTO newDeviceDTO){
         return ResponseEntity.ok(deviceService.create(newDeviceDTO));
     }
-
     @PostMapping("/{deviceId}")
     public ResponseEntity<?> addUsersToDevice(@PathVariable Long deviceId, @RequestBody List<Long> userIds){
         deviceService.addUsersToDevice(deviceId, userIds);
         return ResponseEntity.ok("Users successfully added");
     }
-
     @DeleteMapping("/{deviceId}")
     public ResponseEntity<?> delete(@PathVariable Long deviceId){
         deviceService.delete(deviceId);
