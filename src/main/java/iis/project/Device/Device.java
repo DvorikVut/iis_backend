@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,10 +48,11 @@ public class Device {
     private Studio studio;
 
     @ManyToMany
+    @Builder.Default
     @JsonIgnore
     @JoinTable(
             name = "device_access",
             joinColumns = @JoinColumn(name = "device_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    List<User> users;
+    List<User> users = new ArrayList<>();
 }

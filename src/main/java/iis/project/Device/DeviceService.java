@@ -61,7 +61,6 @@ public class DeviceService {
                 .description(newDeviceDTO.description())
                 .yearOfManufacture(newDeviceDTO.yearOfManufacture())
                 .purchaseDate(newDeviceDTO.purchaseDate())
-                .users(new ArrayList<User>())
                 .maximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours())
                 .studio(studioService.getById(newDeviceDTO.studio_id()))
                 .DisabledForBorrowing(false)
@@ -70,13 +69,9 @@ public class DeviceService {
                 .build();
         save(device);
 
-//        if (device.getForAll()) {
-//            try {
-//                allowDeviceToAllUsersInStudio(device.getId());
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
-//        }
+        if (device.getForAll())
+            allowDeviceToAllUsersInStudio(device.getId());
+
         return deviceInfoDTOMapper.apply(device);
     }
 
