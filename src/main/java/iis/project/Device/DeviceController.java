@@ -1,6 +1,5 @@
 package iis.project.Device;
 
-import com.mysql.cj.log.Log;
 import iis.project.Device.dto.NewDeviceDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

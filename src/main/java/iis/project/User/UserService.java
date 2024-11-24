@@ -18,8 +18,6 @@ public class UserService {
     private final UserRepo userRepo;
     private final UserInfoDTOMapper userInfoDTOMapper;
 
-
-
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User) {

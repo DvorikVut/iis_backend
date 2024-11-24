@@ -49,6 +49,7 @@ public class Device {
 
     @ManyToMany
     @Builder.Default
+    @Column(name = "users", unique = true)
     @JsonIgnore
     @JoinTable(
             name = "device_access",
