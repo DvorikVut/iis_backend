@@ -14,6 +14,6 @@ public record StudioInfo(
         List<DeviceInfoDTO> devicesInfo,
         List<UserInfo> users,
         List<UserInfo> teachers,
-        Long managerId
+        UserInfo managerInfo
 ) {
 }

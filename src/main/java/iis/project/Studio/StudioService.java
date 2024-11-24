@@ -72,6 +72,7 @@ public class StudioService {
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
         studio.setManager(user);
+        userService.save(user);
         save(studio);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
@@ -82,6 +83,7 @@ public class StudioService {
         Studio studio = getById(studio_id);
         User user = studio.getManager();
         studio.setManager(null);
+        userService.save(user);
         save(studio);
         deviceService.removeUserFromUserAccess(user.getId(), studio_id);
     }
