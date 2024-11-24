@@ -10,7 +10,6 @@ public class UserEntityListener {
     @PreUpdate
     public void assignRoleBasedOnStudios(User user) {
         boolean hasTeacherStudios = user.getStudiosAsTeacher() != null && !user.getStudiosAsTeacher().isEmpty();
-        boolean hasUserStudios = user.getStudiosAsUser() != null && !user.getStudiosAsUser().isEmpty();
         boolean hasManagerStudios = user.getManagedStudios() != null && !user.getManagedStudios().isEmpty();
 
         if(user.getRole().equals(Role.ADMIN)) return;

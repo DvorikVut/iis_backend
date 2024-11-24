@@ -41,9 +41,9 @@ public class StudioController {
         studioService.removeManager(studio_id);
         return ResponseEntity.ok("Manager was successfully removed");
     }
-    @PostMapping("/add-teacher")
-    public ResponseEntity<?> addTeacher(@RequestBody Long user_id, @RequestBody Long studio_id){
-        studioService.addTeacher(user_id, studio_id);
+    @PostMapping("/add-teacher/{userId}/{studioId}")
+    public ResponseEntity<?> addTeacher(@PathVariable Long userId, @PathVariable Long studioId){
+        studioService.addTeacher(userId, studioId);
         return ResponseEntity.ok("Teacher was successfully added");
     }
     @PostMapping("/remove-teacher")
