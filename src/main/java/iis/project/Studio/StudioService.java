@@ -164,6 +164,7 @@ public class StudioService {
     public void addTeacher(Long userId, Long studioId) {
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
+        user.setRole(Role.TEACHER);
 
         if(
                 !userService.getCurrentUser().getId().equals(studio.getManager().getId())

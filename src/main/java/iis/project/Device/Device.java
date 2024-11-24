@@ -30,7 +30,7 @@ public class Device {
     private LocalDate purchaseDate;
     private Integer maximumLoanPeriodInHours;
     private Boolean forAll;
-    private Boolean DisabledForBorrowing;
+    private Boolean disabledForBorrowing;
 
     @ManyToOne
     @JsonIgnore

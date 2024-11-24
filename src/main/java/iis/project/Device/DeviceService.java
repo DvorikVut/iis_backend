@@ -63,7 +63,7 @@ public class DeviceService {
                 .purchaseDate(newDeviceDTO.purchaseDate())
                 .maximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours())
                 .studio(studioService.getById(newDeviceDTO.studio_id()))
-                .DisabledForBorrowing(false)
+                .disabledForBorrowing(false)
                 .forAll(newDeviceDTO.forAll())
                 .owner(userService.getCurrentUser())
                 .build();
@@ -103,9 +103,9 @@ public class DeviceService {
         }
 
         Device device = getById(device_id);
-
         device.setDeviceType(deviceTypeService.getById(newDeviceDTO.deviceType_id()));
         device.setName(newDeviceDTO.name());
+        device.setDisabledForBorrowing(newDeviceDTO.disabledForBorrowing());
         device.setDescription(newDeviceDTO.description());
         device.setPurchaseDate(newDeviceDTO.purchaseDate());
         device.setYearOfManufacture(newDeviceDTO.yearOfManufacture());
