@@ -72,4 +72,8 @@ public class UserService {
         user.setSurname(updateProfileDTO.surname());
         save(user);
     }
+
+    public UserInfo getInfoById(Long userId) {
+        return userInfoDTOMapper.apply(getById(userId));
+    }
 }
