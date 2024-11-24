@@ -72,7 +72,7 @@ public class DeviceService {
         if (device.getForAll())
             allowDeviceToAllUsersInStudio(device.getId());
 
-        return "Success";
+        return "Sucess";
     }
 
     public void delete(Long device_id) {
@@ -83,9 +83,10 @@ public class DeviceService {
 
         List<Reservation> futureReservations = reservationService.getFutureReservations(device_id);
         for(Reservation reservation : futureReservations){
-            reservationService.delete(reservation.getId());
             emailSenderService.sendSimpleMessage(reservation.getUser().getEmail(), "Cancel reservation", "Your reservation with " + reservation.getDevice().getName() + " was cancelled, this device is not more available");
+            reservationService.delete(reservation.getId());
         }
+        deviceRepository.deleteById(device_id);
     }
 
     public void change(Long device_id, NewDeviceDTO newDeviceDTO) {
