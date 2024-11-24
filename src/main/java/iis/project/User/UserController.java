@@ -21,4 +21,12 @@ public class UserController {
     public ResponseEntity<?> getAllUsers(){
         return ResponseEntity.ok(userService.getAllByRole(Role.USER));
     }
+
+    @GetMapping("/teachers")
+    public ResponseEntity<?> getAllTeachers(){
+        return ResponseEntity.ok(userService.getAllByRole(Role.TEACHER));
+    }
+
+    @GetMapping("/managers")
+    public ResponseEntity<?> getAllManagers(){ return ResponseEntity.ok(userService.getAllByRole(Role.STUDIO_MANAGER));}
 }
