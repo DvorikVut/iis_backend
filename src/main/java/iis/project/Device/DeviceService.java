@@ -17,6 +17,7 @@ import iis.project.User.User;
 import iis.project.User.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -146,6 +147,8 @@ public class DeviceService {
     @Transactional
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
+        Hibernate.initialize(device.getUsers());
+        Hibernate.initialize(device.getStudio().getUsers());
         List<User> usersInDevice = device.getUsers();
         List<User> usersInStudio = device.getStudio().getUsers();
         usersInDevice.addAll(usersInStudio);
