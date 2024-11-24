@@ -21,12 +21,15 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getById(id));
     }
 
+    @GetMapping("/by-studio/{studioId}")
+    public ResponseEntity<?> getAllByStudioId(@PathVariable Long studioId){
+        return ResponseEntity.ok(roomService.getAllByStudioId(studioId));
+    }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody NewRoomDTO newRoomDTO){
         return ResponseEntity.ok(roomService.create(newRoomDTO));
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<?> change(@RequestBody NewRoomDTO newRoomDTO, @PathVariable Long id){

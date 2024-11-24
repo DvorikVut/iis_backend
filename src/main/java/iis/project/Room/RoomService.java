@@ -4,6 +4,7 @@ import iis.project.Exceptions.NotAuthorizedException;
 import iis.project.Exceptions.ResourceNotFoundException;
 import iis.project.Room.dto.NewRoomDTO;
 import iis.project.Room.dto.RoomInfo;
+import iis.project.Room.dto.RoomInfoDTOMapper;
 import iis.project.Studio.StudioService;
 import iis.project.User.Role;
 import iis.project.User.UserService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,8 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final UserService userService;
     private final StudioService studioService;
+    private final RoomInfoDTOMapper roomInfoDTOMapper;
+
     public Room save(Room room){
         return roomRepository.save(room);
     }
@@ -86,5 +90,11 @@ public class RoomService {
     public void checkIfExist(Long room_id) {
         if(!roomRepository.existsById(room_id))
             throw new ResourceNotFoundException("Room with ID " + room_id + " does not exist");
+    }
+    public List<RoomInfo> getAllByStudioId(Long studioId) {
+        return roomRepository.findAllByStudioId(studioId)
+                .stream()
+                .map(roomInfoDTOMapper)
+                .collect(Collectors.toList());
     }
 }
