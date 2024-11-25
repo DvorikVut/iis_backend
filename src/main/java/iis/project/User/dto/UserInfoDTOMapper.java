@@ -11,7 +11,6 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class UserInfoDTOMapper implements Function<User, UserInfo> {
     private final StudioService studioService;
-
     @Override
     public UserInfo apply(User user) {
         return UserInfo.builder()
