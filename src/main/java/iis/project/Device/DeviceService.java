@@ -111,6 +111,7 @@ public class DeviceService {
 
         Device device = getById(device_id);
         device.setDeviceType(deviceTypeService.getById(newDeviceDTO.deviceType_id()));
+        device.setForAll(newDeviceDTO.forAll());
         device.setName(newDeviceDTO.name());
         device.setDisabledForBorrowing(newDeviceDTO.disabledForBorrowing());
         device.setMaximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours());
