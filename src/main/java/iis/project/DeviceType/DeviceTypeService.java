@@ -72,7 +72,6 @@ public class DeviceTypeService {
         return save(deviceType);
     }
 
-
     public DeviceType save(DeviceType deviceType){
         return deviceTypeRepository.save(deviceType);
     }

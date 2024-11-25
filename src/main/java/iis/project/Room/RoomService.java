@@ -22,10 +22,20 @@ public class RoomService {
     private final StudioService studioService;
     private final RoomInfoDTOMapper roomInfoDTOMapper;
 
+    /**
+     * Save Room
+     * @param room Room to save
+     * @return saved Room
+     */
     public Room save(Room room){
         return roomRepository.save(room);
     }
 
+    /**
+     * Create Room
+     * @param newRoomDTO DTO with Room data
+     * @return created Room
+     */
     public Room create(NewRoomDTO newRoomDTO){
         if(!(userService.checkCurrentUserRole(Role.STUDIO_MANAGER) || (userService.checkCurrentUserRole(Role.ADMIN)))) {
             throw new NotAuthorizedException("You are not authorized to create room");
@@ -42,7 +52,10 @@ public class RoomService {
         return save(room);
     }
 
-
+    /**
+     * Delete room
+     * @param id ID of room to delete
+     */
     public void delete(Long id){
         if(!(userService.checkCurrentUserRole(Role.STUDIO_MANAGER) || (userService.checkCurrentUserRole(Role.ADMIN)))) {
             throw new NotAuthorizedException("You are not authorized to delete room");
@@ -54,6 +67,12 @@ public class RoomService {
         roomRepository.deleteById(id);
     }
 
+    /**
+     * Change room
+     * @param newRoomDTO DTO with new Room data
+     * @param id ID of room to change
+     * @return changed Room
+     */
     public Room change(NewRoomDTO newRoomDTO, Long id){
 
         if(!(userService.checkCurrentUserRole(Role.STUDIO_MANAGER) || (userService.checkCurrentUserRole(Role.ADMIN)))) {
@@ -68,29 +87,38 @@ public class RoomService {
 
         return room;
     }
-    public RoomInfo RoomToRoomInfo(Room room){
-        return RoomInfo.builder()
-                .name(room.getName())
-                .build();
-    }
-
+    /**
+     * Get Room by ID
+     * @param id ID of Room
+     * @return Room
+     */
     public Room getById(Long id){
         return roomRepository.getReferenceById(id);
     }
 
-
-    public RoomInfo getInfoById(Long id){
-        return RoomToRoomInfo(getById(id));
-    }
-
+    /*
+        * Get all Rooms
+        * @return List of Rooms
+     */
     public List<Room> getAll() {
         return roomRepository.findAll();
     }
 
+
+    /**
+     * Check if Room with ID exist
+     * @param room_id ID of Room
+     */
     public void checkIfExist(Long room_id) {
         if(!roomRepository.existsById(room_id))
             throw new ResourceNotFoundException("Room with ID " + room_id + " does not exist");
     }
+
+    /**
+     * Get all Rooms by Studio ID
+     * @param studioId Studio ID
+     * @return List of Rooms
+     */
     public List<RoomInfo> getAllByStudioId(Long studioId) {
         return roomRepository.findAllByStudioId(studioId)
                 .stream()

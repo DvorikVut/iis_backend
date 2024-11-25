@@ -35,6 +35,12 @@ public class StudioService {
         this.studioInfoDTOMapper = studioInfoDTOMapper;
         this.userInfoDTOMapper = userInfoDTOMapper;
     }
+
+    /**
+     * Create new studio
+     * @param newStudioDTO DTO with studio data
+     * @return created studio
+     */
     public Studio create(NewStudioDTO newStudioDTO){
         if(!userService.checkCurrentUserRole(Role.ADMIN)){
             throw new NotAuthorizedException("You are not authorized to create studio");
@@ -45,10 +51,19 @@ public class StudioService {
         setManager(newStudioDTO.userId(), studio.getId());
         return save(studio);
     }
+    /**
+     * Save studio
+     * @param studio Studio to save
+     * @return saved studio
+     */
     public Studio save(Studio studio){
         return studioRepository.save(studio);
     }
 
+    /**
+     * Delete studio
+     * @param studio_id ID of studio to delete
+     */
     @Transactional
     public void delete(Long studio_id){
         Studio studio = getById(studio_id);
@@ -66,6 +81,12 @@ public class StudioService {
         studioRepository.deleteById(studio_id);
     }
 
+    /**
+     * Change studio
+     * @param studio_id ID of studio to change
+     * @param newStudioDTO DTO with new studio data
+     * @return changed studio
+     */
     public Studio change(Long studio_id, NewStudioDTO newStudioDTO){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to change studio");
@@ -77,32 +98,66 @@ public class StudioService {
         studioRepository.save(studio);
         return studio;
     }
+    /**
+     * Check if studio exist
+     * @param studio_id ID of studio
+     */
     public void checkIfExist(Long studio_id){
         if(!studioRepository.existsById(studio_id)){
             throw new ResourceNotFoundException("Studio with ID " + studio_id +" does not exist");
         }
     }
+    /**
+     * Get all studios
+     * @return List of studios
+     */
     public List<Studio> getAll() {
         return studioRepository.findAll();
     }
+    /**
+     * Get studio by ID
+     * @param id ID of studio
+     * @return Studio
+     */
     public Studio getById(Long id) {
         return studioRepository.getReferenceById(id);
     }
+    /**
+     * Get studio info by ID
+     * @param id ID of studio
+     * @return StudioInfo
+     */
     public StudioInfo getInfoById(Long id){
         return studioInfoDTOMapper.apply(studioRepository.getReferenceById(id));
     }
+    /**
+     * Check if user is manager of studio
+     * @param user_id ID of user
+     * @param studio_id ID of studio
+     * @return true if user is manager of studio
+     */
     public boolean checkIfUserIsManager(Long user_id, Long studio_id){
         checkIfExist(studio_id);
         userService.checkIfExist(user_id);
         Studio studio = getById(studio_id);
         return Objects.equals(studio.getManager().getId(), user_id);
     }
+    /**
+     * Get all users info by studio ID
+     * @param studioId ID of studio
+     * @return List of UserInfo
+     */
     public List<UserInfo> getAllUsersInfoByStudioId(Long studioId){
         return getById(studioId).getUsers()
                 .stream()
                 .map(userInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+    /**
+     * Get all teachers info by studio ID
+     * @param studioId ID of studio
+     * @return List of UserInfo
+     */
     public List<UserInfo> getAllTeachersInfoByStudioId(Long studioId){
         return getById(studioId).getTeachers()
                 .stream()
@@ -110,6 +165,11 @@ public class StudioService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Set manager to studio
+     * @param userId ID of user
+     * @param studioId ID of studio
+     */
     @Transactional
     public void setManager(Long userId, Long studioId){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
@@ -124,6 +184,10 @@ public class StudioService {
         userService.handleRole(userId);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
+    /**
+     * Remove manager from studio
+     * @param studio_id ID of studio
+     */
     @Transactional
     public void removeManager(Long studio_id){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
@@ -136,6 +200,11 @@ public class StudioService {
         userService.handleRole(user.getId());
         deviceService.removeUserFromUserAccess(user.getId(), studio_id);
     }
+    /**
+     * Remove user from studio
+     * @param studio_id ID of studio
+     * @param user_id ID of user
+     */
     @Transactional
     public void removeUser(Long studio_id, Long user_id){
         if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
@@ -149,6 +218,11 @@ public class StudioService {
         userService.handleRole(user.getId());
         deviceService.removeUserFromUserAccess(user.getId(), studio_id);
     }
+    /**
+     * Add user to studio
+     * @param studioId ID of studio
+     * @param userId ID of user
+     */
     @Transactional
     public void addUser(Long studioId, Long userId){
         if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
@@ -166,6 +240,11 @@ public class StudioService {
         userService.handleRole(userId);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
+    /**
+     * Add teacher to studio
+     * @param userId ID of user
+     * @param studioId ID of studio
+     */
     @Transactional
     public void addTeacher(Long userId, Long studioId) {
         Studio studio = getById(studioId);
@@ -179,6 +258,11 @@ public class StudioService {
         userService.handleRole(userId);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
+    /**
+     * Remove teacher from studio
+     * @param userId ID of user
+     * @param studioId ID of studio
+     */
     @Transactional
     public void removeTeacher(Long userId, Long studioId){
         Studio studio = getById(studioId);
@@ -191,6 +275,10 @@ public class StudioService {
         userService.handleRole(userId);
         deviceService.removeUserFromUserAccess(userId,studioId);
     }
+    /**
+     * Get all studios by user
+     * @return List of StudioInfo
+     */
     public List<StudioInfo> getAllByUser(){
         User user = userService.getCurrentUser();
         Role userRole = user.getRole();
@@ -214,6 +302,11 @@ public class StudioService {
             default -> throw new RuntimeException("Invalid User Role");
         }
     }
+    /**
+     * Get all studios by user ID
+     * @param userId ID of user
+     * @return List of StudioInfo
+     */
     public List<StudioInfo> getAllByUserId(Long userId) {
         User user = userService.getById(userId);
         return studioRepository.findAllByUsersContaining(user)
@@ -221,6 +314,11 @@ public class StudioService {
                 .map(studioInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+    /**
+     * Get all studios by teacher ID
+     * @param teacherId ID of teacher
+     * @return List of StudioInfo
+     */
     public List<StudioInfo> getAllByTeacherId(Long teacherId) {
         User user = userService.getById(teacherId);
         return studioRepository.findAllByTeachersContaining(user)
@@ -228,12 +326,21 @@ public class StudioService {
                 .map(studioInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+    /**
+     * Get all studios by manager ID
+     * @param managerId ID of manager
+     * @return List of StudioInfo
+     */
     public List<StudioInfo> getAllByManagerId(Long managerId) {
         return studioRepository.findAllByManagerId(managerId)
                 .stream()
                 .map(studioInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+    /**
+     * Delete user from every studio as user
+     * @param userId ID of user
+     */
     @Transactional
     public void deleteUserFromEveryStudiosAsUser(Long userId){
         User user = userService.getById(userId);

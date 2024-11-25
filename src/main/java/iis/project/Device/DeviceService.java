@@ -42,9 +42,6 @@ public class DeviceService {
     private final DeviceInfoDTOMapper deviceInfoDTOMapper;
     private final UserInfoDTOMapper userInfoDTOMapper;
     private final DeviceService deviceService;
-    private final DeviceHoursService deviceHoursService;
-
-    private final MyLogger myLogger;
 
     public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper, @Lazy DeviceService deviceService, @Lazy DeviceHoursService deviceHoursService, MyLogger myLogger) {
         this.deviceRepository = deviceRepository;
@@ -56,8 +53,6 @@ public class DeviceService {
         this.deviceInfoDTOMapper = deviceInfoDTOMapper;
         this.userInfoDTOMapper = userInfoDTOMapper;
         this.deviceService = deviceService;
-        this.deviceHoursService = deviceHoursService;
-        this.myLogger = myLogger;
     }
     /**
      * Creates a new device based on the provided DTO.
@@ -256,9 +251,9 @@ public class DeviceService {
 
 
     /**
+     * Get all devices that the current user can borrow.
      *
-     *
-     * @return
+     * @return List of devices that the current user can borrow.
      */
 
     public List<DeviceInfoDTO> getAllByUserCanBorrow(){
@@ -271,16 +266,33 @@ public class DeviceService {
                 .map(deviceInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Checks if the current user can borrow a device.
+     * @param userId The ID of the user
+     * @param deviceId The ID of the device
+     * @return
+     */
     public boolean checkIfCanBorrow(Long userId, Long deviceId){
         Device device = deviceService.getById(deviceId);
         return (deviceRepository.existsByIdAndUsersContaining(deviceId, userService.getById(userId)) || userService.checkCurrentUserRole(Role.ADMIN)) && !device.getDisabledForBorrowing();
     }
+
+    /**
+     * Get all devices in the database.
+     * @return List of all devices in the database.
+     */
     public List<DeviceInfoDTO> getAll() {
         return deviceRepository.findAll()
                 .stream()
                 .map(deviceInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Get all devices that the current user owns.
+     * @return List of devices that the current user owns.
+     */
     public List<DeviceInfoDTO> getAllByOwnerId(){
         User owner = userService.getCurrentUser();
         return deviceRepository.findAllByOwnerId(owner.getId())
@@ -288,9 +300,22 @@ public class DeviceService {
                 .map(deviceInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Get all devices by its type.
+     * @param deviceTypeId The ID of the device type.
+     * @return List of devices with the provided type.
+     */
+
     public List<Device> getAllByDeviceTypeId(Long deviceTypeId) {
         return deviceRepository.findAllByDeviceTypeId(deviceTypeId);
     }
+
+    /**
+     * Add users to a device(access to borrow).
+     * @param deviceId The ID of the device.
+     * @param userIds List of user IDs to add.
+     */
 
     public void addUsersToDevice(Long deviceId, List<Long> userIds){
         Device device = getById(deviceId);
@@ -306,6 +331,11 @@ public class DeviceService {
         save(device);
     }
 
+    /**
+     * Get all users that can borrow a device.
+     * @param deviceId The ID of the device.
+     * @return List of users that can borrow the device.
+     */
     public List<UserInfo> getAllUsersThatCanBorrowDevice(Long deviceId) {
         Device device = getById(deviceId);
         return device.getUsers()
