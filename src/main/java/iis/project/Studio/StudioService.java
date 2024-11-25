@@ -68,6 +68,7 @@ public class StudioService {
 
     public void delete(Long studio_id){
         Studio studio = getById(studio_id);
+        User manager = studio.getManager();
         if(!userService.checkCurrentUserRole(Role.ADMIN)){
             throw new NotAuthorizedException("You are not authorized to delete studio");
         }
@@ -79,6 +80,7 @@ public class StudioService {
             deviceService.delete(device.getId());
         }
         studioRepository.delete(studio);
+        userService.handleRole(manager.getId());
     }
 
     /**
