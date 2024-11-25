@@ -66,7 +66,8 @@ public class DeviceHoursService {
     public void deleteById(Long deviceHoursId) {
         Device device = deviceService.getById(deviceHoursId);
         User currentUser = userService.getCurrentUser();
-        if(!currentUser.equals(device.getOwner()))
+        if(!currentUser.equals(device.getOwner()) && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to delete this DeviceHours");
+        deviceHoursRepository.deleteById(deviceHoursId);
     }
 }
