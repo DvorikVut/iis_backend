@@ -30,6 +30,7 @@ public class DeviceController {
         return ResponseEntity.ok(deviceService.getAllByUserCanBorrow());
     }
     @GetMapping("/owner")
+
     public ResponseEntity<?> getAllByOwnerId(){
         return ResponseEntity.ok(deviceService.getAllByOwnerId());
     }
