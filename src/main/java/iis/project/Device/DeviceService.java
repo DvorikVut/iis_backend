@@ -212,7 +212,10 @@ public class DeviceService {
         Hibernate.initialize(device.getStudio().getUsers());
         List<User> usersInDevice = device.getUsers();
         List<User> usersInStudio = device.getStudio().getUsers();
+        List<User> teachersInStudio = device.getStudio().getTeachers();
         usersInDevice.addAll(usersInStudio);
+        usersInDevice.addAll(teachersInStudio);
+        usersInStudio.add(studioService.getById(device.getStudio().getId()).getManager());
         device.setUsers(usersInDevice);
         save(device);
     }
@@ -236,7 +239,8 @@ public class DeviceService {
 
 
     /**
-     * @param studio_id
+     * Get all devices in the studio by its ID.
+     * @param studio_id The ID of the studio
      * @return List of devices in the studio
      */
     public List<DeviceInfoDTO> getAllByStudioId(Long studio_id) {
@@ -248,6 +252,7 @@ public class DeviceService {
 
 
     /**
+     *
      *
      * @return
      */
