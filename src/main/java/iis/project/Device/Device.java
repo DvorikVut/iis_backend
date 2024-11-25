@@ -1,6 +1,7 @@
 package iis.project.Device;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import iis.project.DeviceHours.DeviceHours;
 import iis.project.DeviceType.DeviceType;
 import iis.project.Studio.Studio;
 import iis.project.User.User;
@@ -56,4 +57,7 @@ public class Device {
             joinColumns = @JoinColumn(name = "device_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "studio", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    List<DeviceHours> deviceHours;
 }

@@ -1,5 +1,6 @@
 package iis.project.Studio;
 
+import iis.project.Room.Room;
 import iis.project.User.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,4 +42,7 @@ public class Studio {
     @ManyToOne
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private User manager;
+
+    @OneToMany(mappedBy = "studio", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Room> rooms;
 }
