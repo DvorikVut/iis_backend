@@ -64,10 +64,15 @@ public class DeviceHoursService {
     }
 
     public void deleteById(Long deviceHoursId) {
-        Device device = deviceService.getById(deviceHoursId);
+        DeviceHours deviceHours = getById(deviceHoursId);
+        Device device = deviceService.getById(deviceHours.getDevice().getId());
         User currentUser = userService.getCurrentUser();
         if(!currentUser.equals(device.getOwner()) && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to delete this DeviceHours");
         deviceHoursRepository.deleteById(deviceHoursId);
+    }
+
+    private DeviceHours getById(Long deviceHoursId) {
+        return deviceHoursRepository.findById(deviceHoursId).orElseThrow(() -> new ResourceNotFoundException("DeviceHours with ID " + deviceHoursId + " does not exists"));
     }
 }
