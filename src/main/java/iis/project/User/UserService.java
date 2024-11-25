@@ -90,10 +90,6 @@ public class UserService {
      */
     public void handleRole(Long userId){
         User user = getById(userId);
-
-        System.out.println(user.getStudiosAsTeacher());
-        System.out.println(user.getManagedStudios());
-
         boolean hasTeacherRoles = user.getStudiosAsTeacher() != null && !user.getStudiosAsTeacher().isEmpty();
         boolean hasManagerRoles = user.getManagedStudios() != null && !user.getManagedStudios().isEmpty();
 
