@@ -65,10 +65,9 @@ public class StudioService {
      * Delete studio
      * @param studio_id ID of studio to delete
      */
-    @Transactional
+
     public void delete(Long studio_id){
         Studio studio = getById(studio_id);
-        User user = studio.getManager();
         if(!userService.checkCurrentUserRole(Role.ADMIN)){
             throw new NotAuthorizedException("You are not authorized to delete studio");
         }
@@ -79,12 +78,6 @@ public class StudioService {
         for(Device device : devicesInStudio){
             deviceService.delete(device.getId());
         }
-
-        studio.setManager(null);
-        save(studio);
-        userService.handleRole(user.getId());
-        deviceService.removeUserFromUserAccess(user.getId(), studio_id);
-
         studioRepository.delete(studio);
     }
 
