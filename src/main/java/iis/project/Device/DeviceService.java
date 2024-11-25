@@ -3,6 +3,7 @@ package iis.project.Device;
 import iis.project.Device.dto.DeviceInfoDTO;
 import iis.project.Device.dto.DeviceInfoDTOMapper;
 import iis.project.Device.dto.NewDeviceDTO;
+import iis.project.DeviceHours.DeviceHoursService;
 import iis.project.DeviceType.DeviceTypeService;
 import iis.project.EmailSender.EmailSenderService;
 import iis.project.Exceptions.NotAuthorizedException;
@@ -41,10 +42,11 @@ public class DeviceService {
     private final DeviceInfoDTOMapper deviceInfoDTOMapper;
     private final UserInfoDTOMapper userInfoDTOMapper;
     private final DeviceService deviceService;
+    private final DeviceHoursService deviceHoursService;
 
     private final MyLogger myLogger;
 
-    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper, @Lazy DeviceService deviceService, MyLogger myLogger) {
+    public DeviceService(@Lazy DeviceRepository deviceRepository, @Lazy UserService userService, @Lazy DeviceTypeService deviceTypeService, @Lazy StudioService studioService, @Lazy ReservationService reservationService, @Lazy EmailSenderService emailSenderService, @Lazy DeviceInfoDTOMapper deviceInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper, @Lazy DeviceService deviceService, @Lazy DeviceHoursService deviceHoursService, MyLogger myLogger) {
         this.deviceRepository = deviceRepository;
         this.userService = userService;
         this.deviceTypeService = deviceTypeService;
@@ -54,6 +56,7 @@ public class DeviceService {
         this.deviceInfoDTOMapper = deviceInfoDTOMapper;
         this.userInfoDTOMapper = userInfoDTOMapper;
         this.deviceService = deviceService;
+        this.deviceHoursService = deviceHoursService;
         this.myLogger = myLogger;
     }
 
@@ -84,7 +87,6 @@ public class DeviceService {
 
     public void delete(Long device_id) {
 
-        //1 - check if it is borrowed ( Find reservations, where start - currentTime - end)
         if(!reservationService.canDeleteByCurrentTime(device_id))
             throw new RuntimeException("You cannot delete device when it is borrowed");
 
@@ -93,6 +95,7 @@ public class DeviceService {
             emailSenderService.sendSimpleMessage(reservation.getUser().getEmail(), "Cancel reservation", "Your reservation with " + reservation.getDevice().getName() + " was cancelled, this device is not more available");
             reservationService.delete(reservation.getId());
         }
+        deviceHoursService.deleteAllByDeviceId(device_id);
         deviceRepository.deleteById(device_id);
     }
 

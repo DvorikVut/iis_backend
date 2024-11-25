@@ -75,4 +75,8 @@ public class DeviceHoursService {
     private DeviceHours getById(Long deviceHoursId) {
         return deviceHoursRepository.findById(deviceHoursId).orElseThrow(() -> new ResourceNotFoundException("DeviceHours with ID " + deviceHoursId + " does not exists"));
     }
+
+    public void deleteAllByDeviceId(Long deviceId){
+        deviceHoursRepository.deleteAllByDeviceId(deviceId);
+    }
 }

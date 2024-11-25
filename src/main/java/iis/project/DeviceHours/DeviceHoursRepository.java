@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface DeviceHoursRepository extends JpaRepository<DeviceHours,Long> {
     List<DeviceHours> findAllByDeviceId(Long deviceId);
+    void deleteAllByDeviceId(Long deviceId);
 }
