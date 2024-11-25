@@ -58,6 +58,6 @@ public class Device {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     List<User> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "studio", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "device", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<DeviceHours> deviceHours;
 }
