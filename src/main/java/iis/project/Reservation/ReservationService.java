@@ -112,7 +112,6 @@ public class ReservationService {
     }
     public void changeStatus(Long reservationId, ReservationStatus newStatus){
         Reservation reservation = getById(reservationId);
-        reservation.setStatus(newStatus);
 
         if(newStatus == ReservationStatus.BORROWED && reservation.getStatus().equals(ReservationStatus.RESERVED))
             reservation.setActualStartDateTime(LocalDateTime.now());
@@ -120,6 +119,7 @@ public class ReservationService {
         if(newStatus == ReservationStatus.RETURNED && reservation.getStatus().equals(ReservationStatus.BORROWED))
             reservation.setActualEndDateTime(LocalDateTime.now());
 
+        reservation.setStatus(newStatus);
         save(reservation);
     }
     public boolean canDeleteByCurrentTime(Long deviceId){

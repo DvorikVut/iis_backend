@@ -10,6 +10,7 @@ public class DeviceHoursInfoDTOMapper implements Function<DeviceHours, DeviceHou
     @Override
     public DeviceHoursInfoDTO apply(DeviceHours deviceHours) {
         return DeviceHoursInfoDTO.builder()
+                .dayOfWeek(deviceHours.getDayOfWeek())
                 .deviceHoursId(deviceHours.getId())
                 .startTime(deviceHours.getStartTime())
                 .endTime(deviceHours.getEndTime())
