@@ -95,7 +95,6 @@ public class DeviceService {
             emailSenderService.sendSimpleMessage(reservation.getUser().getEmail(), "Cancel reservation", "Your reservation with " + reservation.getDevice().getName() + " was cancelled, this device is not more available");
             reservationService.delete(reservation.getId());
         }
-        deviceHoursService.deleteAllByDeviceId(device_id);
         deviceRepository.deleteById(device_id);
     }
 
