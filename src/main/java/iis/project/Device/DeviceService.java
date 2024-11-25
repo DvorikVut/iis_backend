@@ -294,10 +294,15 @@ public class DeviceService {
 
     public void addUsersToDevice(Long deviceId, List<Long> userIds){
         Device device = getById(deviceId);
-        List<User> usersToAdd = userIds.stream()
+        List<User> usersInDevice = device.getUsers();
+        List<User> usersToAdd = new ArrayList<>(userIds.stream()
                 .map(userService::getById) // Получаем объект User для каждого ID
-                .toList();
-        device.setUsers(usersToAdd);
+                .toList());
+
+        //Add only users that are not already in the device
+        usersToAdd.removeAll(usersInDevice);
+        usersInDevice.addAll(usersToAdd);
+        device.setUsers(usersInDevice);
         save(device);
     }
 
