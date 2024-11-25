@@ -73,7 +73,7 @@ public class DeviceService {
                 .purchaseDate(newDeviceDTO.purchaseDate())
                 .maximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours())
                 .studio(studioService.getById(newDeviceDTO.studio_id()))
-                .disabledForBorrowing(false)
+                .disabledForBorrowing(newDeviceDTO.disabledForBorrowing())
                 .forAll(newDeviceDTO.forAll())
                 .owner(userService.getCurrentUser())
                 .build();

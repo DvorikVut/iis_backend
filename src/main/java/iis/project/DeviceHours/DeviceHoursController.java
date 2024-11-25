@@ -16,7 +16,7 @@ public class DeviceHoursController {
     private final DeviceHoursService deviceHoursService;
 
     @GetMapping("/by-deviceId/{deviceId}")
-    public ResponseEntity<List<DeviceHoursInfoDTO>> getAllByDeviceId(@PathVariable Long deviceId) {
+    public ResponseEntity<?> getAllByDeviceId(@PathVariable Long deviceId) {
         return ResponseEntity.ok(deviceHoursService.getAllByDeviceId(deviceId));
     }
 
