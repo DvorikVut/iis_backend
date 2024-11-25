@@ -79,10 +79,13 @@ public class StudioService {
         for(Device device : devicesInStudio){
             deviceService.delete(device.getId());
         }
+
         studio.setManager(null);
+        save(studio);
         userService.handleRole(user.getId());
         deviceService.removeUserFromUserAccess(user.getId(), studio_id);
-        studioRepository.deleteById(studio_id);
+
+        studioRepository.delete(studio);
     }
 
     /**

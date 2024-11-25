@@ -98,7 +98,6 @@ public class UserService {
         else if (hasManagerRoles)
             user.setRole(Role.STUDIO_MANAGER);
         else user.setRole(Role.USER);
-
         save(user);
     }
 
