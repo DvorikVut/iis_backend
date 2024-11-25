@@ -1,6 +1,5 @@
 package iis.project.Device.dto;
 
-import iis.project.DeviceHours.DeviceHours;
 import iis.project.DeviceHours.dto.DeviceHoursInfoDTO;
 import iis.project.DeviceType.DeviceType;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import java.util.List;
 @Builder
 
 public record DeviceInfoDTO(
-
         Long id,
         String name,
         String description,

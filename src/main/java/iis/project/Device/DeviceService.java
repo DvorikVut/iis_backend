@@ -59,6 +59,15 @@ public class DeviceService {
         this.deviceHoursService = deviceHoursService;
         this.myLogger = myLogger;
     }
+    /**
+     * Creates a new device based on the provided DTO.
+     * This method checks if the current user has the required role (ADMIN or TEACHER)
+     * and builds a new device object with the provided data.
+     * If the device is available for everyone (`forAll` is true), it grants access to all users in the studio.
+     *
+     * @param newDeviceDTO The data transfer object containing device information.
+     * @return A success message if the device was created successfully.
+     */
 
     public String create(NewDeviceDTO newDeviceDTO) {
         if (!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.TEACHER)))) {
@@ -77,6 +86,7 @@ public class DeviceService {
                 .forAll(newDeviceDTO.forAll())
                 .owner(userService.getCurrentUser())
                 .build();
+
         save(device);
 
         if (device.getForAll())
@@ -84,6 +94,15 @@ public class DeviceService {
 
         return "Success";
     }
+
+    /**
+     * Deletes a device with the provided ID.
+     * This method checks if the device is currently borrowed by a user.
+     * If the device is borrowed, it cancels all future reservations and sends an email to the users.
+     * Finally, it deletes the device from the database.
+     *
+     * @param device_id The ID of the device to delete.
+     */
 
     public void delete(Long device_id) {
 
@@ -97,6 +116,16 @@ public class DeviceService {
         }
         deviceRepository.deleteById(device_id);
     }
+
+    /**
+     * Changes the device information based on the provided DTO.
+     * This method checks if the current user has the required role (ADMIN or TEACHER)
+     * and if the user is the owner of the device.
+     * If the user is the owner, it updates the device information with the provided data.
+     *
+     * @param device_id The ID of the device to change.
+     * @param newDeviceDTO The data transfer object containing the new device information.
+     */
 
     public void change(Long device_id, NewDeviceDTO newDeviceDTO) {
         if (!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.TEACHER)))) {
@@ -123,9 +152,24 @@ public class DeviceService {
         save(device);
     }
 
+    /**
+     * Gets a device by its ID.
+     *
+     * @param deviceId The ID of the device to get.
+     * @return The device with the provided ID.
+     */
+
     public Device getById(Long deviceId) {
         return deviceRepository.getReferenceById(deviceId);
     }
+
+
+    /**
+     * Gets the device information by its ID.
+     *
+     * @param deviceId The ID of the device to get.
+     * @return The device information with the provided ID.
+     */
 
     public DeviceInfoDTO getInfoById(Long deviceId){
         return deviceInfoDTOMapper.apply(getById(deviceId));
@@ -135,6 +179,12 @@ public class DeviceService {
             throw new ResourceNotFoundException("Device with ID " + device_id + " does not exist");
         }
     }
+
+    /**
+     * Saves a device to the database.
+     *
+     * @param device The device to save.
+     */
     public void save(Device device) {
         deviceRepository.save(device);
     }
@@ -150,6 +200,12 @@ public class DeviceService {
         }
     }
 
+    /**
+     * Grants access to a device to all users in the studio.
+     *
+     * @param device_id The ID of the device to grant access to.
+     */
+
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
         Hibernate.initialize(device.getUsers());
@@ -160,6 +216,13 @@ public class DeviceService {
         device.setUsers(usersInDevice);
         save(device);
     }
+
+    /**
+     * Removes a user from a device.
+     *
+     * @param userId The ID of the user to remove.
+     * @param studioId The ID of the studio
+     */
 
     public void removeUserFromUserAccess(Long userId, Long studioId){
         Studio studio = studioService.getById(studioId);
@@ -172,12 +235,22 @@ public class DeviceService {
     }
 
 
+    /**
+     * @param studio_id
+     * @return List of devices in the studio
+     */
     public List<DeviceInfoDTO> getAllByStudioId(Long studio_id) {
         return deviceRepository.findAllByStudio(studioService.getById(studio_id))
                 .stream()
                 .map(deviceInfoDTOMapper)
                 .collect(Collectors.toList());
     }
+
+
+    /**
+     *
+     * @return
+     */
 
     public List<DeviceInfoDTO> getAllByUserCanBorrow(){
         if(userService.checkCurrentUserRole(Role.ADMIN))

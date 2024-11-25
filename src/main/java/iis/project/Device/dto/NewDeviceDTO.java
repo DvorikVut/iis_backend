@@ -9,7 +9,6 @@ public record NewDeviceDTO(
         Integer yearOfManufacture,
         LocalDate purchaseDate,
         Boolean disabledForBorrowing,
-        String pathToImage,
         Integer maximumLoanPeriodInHours,
         Boolean forAll,
         Long studio_id

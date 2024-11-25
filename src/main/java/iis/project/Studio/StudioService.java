@@ -106,6 +106,7 @@ public class StudioService {
         User user = userService.getById(userId);
         studio.setManager(user);
         save(studio);
+        deleteUserFromEveryStudiosAsUser(userId);
         userService.handleRole(userId);
         deviceService.allowUserToAllDevicesInStudio(userId,studioId);
     }
