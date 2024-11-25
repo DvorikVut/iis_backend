@@ -54,11 +54,11 @@ public class StudioService {
     }
     /**
      * Save studio
+     *
      * @param studio Studio to save
-     * @return saved studio
      */
-    public Studio save(Studio studio){
-        return studioRepository.save(studio);
+    public void save(Studio studio){
+        studioRepository.save(studio);
     }
 
     /**
@@ -68,6 +68,7 @@ public class StudioService {
     @Transactional
     public void delete(Long studio_id){
         Studio studio = getById(studio_id);
+        User user = studio.getManager();
         if(!userService.checkCurrentUserRole(Role.ADMIN)){
             throw new NotAuthorizedException("You are not authorized to delete studio");
         }
@@ -78,7 +79,9 @@ public class StudioService {
         for(Device device : devicesInStudio){
             deviceService.delete(device.getId());
         }
-        removeManager(studio_id);
+        studio.setManager(null);
+        userService.handleRole(user.getId());
+        deviceService.removeUserFromUserAccess(user.getId(), studio_id);
         studioRepository.deleteById(studio_id);
     }
 
