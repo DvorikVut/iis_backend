@@ -48,8 +48,9 @@ public class StudioService {
         Studio studio = Studio.builder()
                 .name(newStudioDTO.name())
                 .build();
+        save(studio);
         setManager(newStudioDTO.userId(), studio.getId());
-        return save(studio);
+        return studio;
     }
     /**
      * Save studio
