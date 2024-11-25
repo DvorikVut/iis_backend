@@ -1,6 +1,7 @@
 package iis.project.DeviceHours.dto;
 
-import java.time.DayOfWeek;
+import iis.project.DeviceHours.DayOfWeek;
+
 import java.time.LocalTime;
 
 public record NewDeviceHoursDTO(

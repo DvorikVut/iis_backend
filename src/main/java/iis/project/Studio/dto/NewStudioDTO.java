@@ -1,6 +1,7 @@
 package iis.project.Studio.dto;
 
 public record NewStudioDTO(
-        String name
+        String name,
+        Long userId
 ) {
 }

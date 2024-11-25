@@ -2,7 +2,7 @@ package iis.project.DeviceHours.dto;
 
 import lombok.Builder;
 
-import java.time.DayOfWeek;
+import iis.project.DeviceHours.DayOfWeek;
 import java.time.LocalTime;
 
 @Builder

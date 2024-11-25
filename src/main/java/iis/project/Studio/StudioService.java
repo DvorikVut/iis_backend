@@ -37,7 +37,10 @@ public class StudioService {
         if(!userService.checkCurrentUserRole(Role.ADMIN)){
             throw new NotAuthorizedException("You are not authorized to create studio");
         }
-        Studio studio = Studio.builder().name(newStudioDTO.name()).build();
+        Studio studio = Studio.builder()
+                .name(newStudioDTO.name())
+                .manager(userService.getById(newStudioDTO.userId()))
+                .build();
         return save(studio);
     }
     public Studio save(Studio studio){
