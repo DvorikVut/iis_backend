@@ -48,7 +48,7 @@ public class RoomService {
             throw new NotAuthorizedException("You are not authorized to delete room");
         }
 
-        if(!studioService.checkIfUserIsManager(userService.getCurrentUser().getId(), id))
+        if(!studioService.checkIfUserIsManager(userService.getCurrentUser().getId(), getById(id).getStudio().getId()))
             throw new NotAuthorizedException("You must be a manager for studio to delete room in it");
 
         roomRepository.deleteById(id);
