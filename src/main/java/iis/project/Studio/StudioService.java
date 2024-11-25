@@ -59,8 +59,8 @@ public class StudioService {
         for(Device device : devicesInStudio){
             deviceService.delete(device.getId());
         }
+        removeManager(studio_id);
         studioRepository.deleteById(studio_id);
-        userService.handleRole(studio.getManager().getId());
     }
     public Studio change(Long studio_id, NewStudioDTO newStudioDTO){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
