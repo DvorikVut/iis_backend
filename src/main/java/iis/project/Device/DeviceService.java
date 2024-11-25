@@ -113,6 +113,7 @@ public class DeviceService {
         device.setDeviceType(deviceTypeService.getById(newDeviceDTO.deviceType_id()));
         device.setName(newDeviceDTO.name());
         device.setDisabledForBorrowing(newDeviceDTO.disabledForBorrowing());
+        device.setMaximumLoanPeriodInHours(newDeviceDTO.maximumLoanPeriodInHours());
         device.setDescription(newDeviceDTO.description());
         device.setPurchaseDate(newDeviceDTO.purchaseDate());
         device.setYearOfManufacture(newDeviceDTO.yearOfManufacture());
