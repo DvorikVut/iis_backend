@@ -1,5 +1,6 @@
 package iis.project.Studio;
 
+import iis.project.Device.Device;
 import iis.project.Device.DeviceService;
 import iis.project.Exceptions.NotAuthorizedException;
 import iis.project.Exceptions.ResourceAlreadyExistException;
@@ -52,6 +53,12 @@ public class StudioService {
         }
 
         checkIfExist(studio_id);
+        List<Device> devicesInStudio = deviceService.getAllRawByStudioId(studio_id);
+
+        for(Device device : devicesInStudio){
+            deviceService.delete(device.getId());
+        }
+
         studioRepository.deleteById(studio_id);
     }
     public Studio change(Long studio_id, NewStudioDTO newStudioDTO){

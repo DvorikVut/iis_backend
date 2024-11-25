@@ -237,6 +237,10 @@ public class DeviceService {
         }
     }
 
+    public List<Device> getAllRawByStudioId(Long studio_id) {
+        return deviceRepository.findAllByStudio(studioService.getById(studio_id));
+    }
+
 
     /**
      * Get all devices in the studio by its ID.
