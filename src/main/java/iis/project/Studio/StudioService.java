@@ -42,12 +42,15 @@ public class StudioService {
                 .name(newStudioDTO.name())
                 .manager(userService.getById(newStudioDTO.userId()))
                 .build();
+        deleteUserFromEveryStudiosAsUser(newStudioDTO.userId());
+        userService.handleRole(newStudioDTO.userId());
         return save(studio);
     }
     public Studio save(Studio studio){
         return studioRepository.save(studio);
     }
     public void delete(Long studio_id){
+        Studio studio = getById(studio_id);
         if(!userService.checkCurrentUserRole(Role.ADMIN)){
             throw new NotAuthorizedException("You are not authorized to delete studio");
         }
@@ -58,8 +61,8 @@ public class StudioService {
         for(Device device : devicesInStudio){
             deviceService.delete(device.getId());
         }
-
         studioRepository.deleteById(studio_id);
+        userService.handleRole(studio.getManager().getId());
     }
     public Studio change(Long studio_id, NewStudioDTO newStudioDTO){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
