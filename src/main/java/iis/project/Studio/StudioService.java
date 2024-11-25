@@ -40,10 +40,8 @@ public class StudioService {
         }
         Studio studio = Studio.builder()
                 .name(newStudioDTO.name())
-                .manager(userService.getById(newStudioDTO.userId()))
                 .build();
-        deleteUserFromEveryStudiosAsUser(newStudioDTO.userId());
-        userService.handleRole(newStudioDTO.userId());
+        setManager(newStudioDTO.userId(), studio.getId());
         return save(studio);
     }
     public Studio save(Studio studio){
