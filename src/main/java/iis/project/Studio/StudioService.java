@@ -81,6 +81,7 @@ public class StudioService {
         }
         studioRepository.delete(studio);
         userService.handleRole(manager.getId());
+        deleteUserFromEveryStudiosAsUser(manager.getId());
     }
 
     /**
