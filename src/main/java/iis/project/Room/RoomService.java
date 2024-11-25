@@ -31,7 +31,7 @@ public class RoomService {
             throw new NotAuthorizedException("You are not authorized to create room");
         }
 
-        if(!studioService.checkIfUserIsManager(userService.getCurrentUser().getId(), newRoomDTO.studio_id()))
+        if(!studioService.checkIfUserIsManager(userService.getCurrentUser().getId(), newRoomDTO.studio_id()) && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You must be a manager for studio to create room in it");
 
 
