@@ -319,7 +319,7 @@ public class DeviceService {
 
     public void addUsersToDevice(Long deviceId, List<Long> userIds){
         Device device = getById(deviceId);
-        List<User> usersInDevice = device.getUsers();
+        List<User> usersInDevice = new ArrayList<>();
         List<User> usersToAdd = new ArrayList<>(userIds.stream()
                 .map(userService::getById) // Получаем объект User для каждого ID
                 .toList());
