@@ -50,13 +50,15 @@ public class Device {
 
     @ManyToMany
     @Builder.Default
-    @Column(name = "users", unique = true)
     @JsonIgnore
     @JoinTable(
             name = "device_access",
             joinColumns = @JoinColumn(name = "device_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+            inverseJoinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"device_id", "user_id"})
+    )
     List<User> users = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "device", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<DeviceHours> deviceHours;
