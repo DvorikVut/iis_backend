@@ -24,7 +24,7 @@ public class UserService {
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User) {
-            return (User) principal;
+            return getById(((User) principal).getId());
         } else {
             throw new RuntimeException("User ne user nah");
         }

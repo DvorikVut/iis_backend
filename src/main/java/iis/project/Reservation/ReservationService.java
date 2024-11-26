@@ -66,14 +66,15 @@ public class ReservationService {
         if(reservation.getStatus().equals(ReservationStatus.BORROWED))
             throw new RuntimeException("You cannot delete reservation if device was already taken");
 
-//        if (!(
-//                currentUser.getRole().equals(Role.ADMIN)
-//                || device.getOwner().equals(currentUser)
-//                || creatorOfReservation.equals(currentUser)
-//        )
-//        ) {
-//            throw new NotAuthorizedException("You are not authorized to delete this reservation");
-//        }
+
+        if (!(
+                currentUser.getRole().equals(Role.ADMIN)
+                || device.getOwner().equals(currentUser)
+                || creatorOfReservation.equals(currentUser)
+        )
+        ) {
+            throw new NotAuthorizedException("You are not authorized to delete this reservation");
+        }
 
         checkIfExist(reservation_id);
         reservationRepository.deleteById(reservation_id);
