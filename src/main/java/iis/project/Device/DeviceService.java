@@ -206,14 +206,17 @@ public class DeviceService {
         Device device = getById(device_id);
         List<User> usersInDevice = device.getUsers();
 
-        List<User> usersInStudio = device.getStudio().getUsers();
-        List<User> teachersInStudio = device.getStudio().getTeachers();
+        List<User> usersInStudio = new ArrayList<>(device.getStudio().getUsers());
+        List<User> teachersInStudio = new ArrayList<>(device.getStudio().getTeachers());
+
+
 
         usersInStudio.removeAll(usersInDevice);
-        usersInStudio.removeAll(teachersInStudio);
+        teachersInStudio.removeAll(usersInDevice);
 
         usersInDevice.addAll(usersInStudio);
         usersInDevice.addAll(teachersInStudio);
+
         if(!usersInDevice.contains(device.getStudio().getManager()))
             usersInDevice.add(device.getOwner());
 
