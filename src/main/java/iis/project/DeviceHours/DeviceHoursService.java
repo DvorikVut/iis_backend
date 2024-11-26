@@ -43,7 +43,7 @@ public class DeviceHoursService {
      */
     public DeviceHours create(NewDeviceHoursDTO newDeviceHoursDTO){
         Device device = deviceService.getById(newDeviceHoursDTO.device_id());
-        if(!userService.checkCurrentUserRole(Role.ADMIN) && !device.getOwner().equals(userService.getCurrentUser())){
+        if(!userService.checkCurrentUserRole(Role.ADMIN) || !device.getOwner().equals(userService.getCurrentUser())){
             throw new NotAuthorizedException("You are not authorized to create DeviceHour for this device");
         }
 
