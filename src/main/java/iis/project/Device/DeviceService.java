@@ -203,21 +203,21 @@ public class DeviceService {
 
     public void allowDeviceToAllUsersInStudio(Long device_id) {
         Device device = getById(device_id);
-        Hibernate.initialize(device.getUsers());
-        Hibernate.initialize(device.getStudio().getUsers());
         List<User> usersInDevice = device.getUsers();
+
         List<User> usersInStudio = device.getStudio().getUsers();
         List<User> teachersInStudio = device.getStudio().getTeachers();
 
         usersInStudio.removeAll(usersInDevice);
         usersInStudio.removeAll(teachersInStudio);
-        usersInStudio.add(studioService.getById(device.getStudio().getId()).getManager());
+        usersInStudio.remove(device.getOwner());
 
         usersInDevice.addAll(usersInStudio);
         usersInDevice.addAll(teachersInStudio);
-        usersInStudio.add(studioService.getById(device.getStudio().getId()).getManager());
-        device.setUsers(usersInDevice);
+        usersInDevice.add(device.getOwner());
 
+
+        device.setUsers(usersInDevice);
         save(device);
     }
 
