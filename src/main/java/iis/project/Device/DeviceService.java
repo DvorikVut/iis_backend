@@ -85,6 +85,7 @@ public class DeviceService {
 
         if (device.getForAll())
             allowDeviceToAllUsersInStudio(device.getId());
+
         return "Success";
     }
 
@@ -210,11 +211,11 @@ public class DeviceService {
 
         usersInStudio.removeAll(usersInDevice);
         usersInStudio.removeAll(teachersInStudio);
-        usersInStudio.add(device.getStudio().getManager());
 
         usersInDevice.addAll(usersInStudio);
         usersInDevice.addAll(teachersInStudio);
-        usersInStudio.add(device.getStudio().getManager());
+        if(!usersInDevice.contains(device.getStudio().getManager()))
+            usersInDevice.add(device.getOwner());
 
         device.setUsers(usersInDevice);
         save(device);
