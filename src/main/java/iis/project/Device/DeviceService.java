@@ -209,18 +209,10 @@ public class DeviceService {
         List<User> usersInStudio = new ArrayList<>(device.getStudio().getUsers());
         List<User> teachersInStudio = new ArrayList<>(device.getStudio().getTeachers());
 
-
-
-        usersInStudio.removeAll(usersInDevice);
-        teachersInStudio.removeAll(usersInDevice);
-
         usersInDevice.addAll(usersInStudio);
         usersInDevice.addAll(teachersInStudio);
+        usersInDevice.add(device.getStudio().getManager());
 
-        if(!usersInDevice.contains(device.getStudio().getManager()))
-            usersInDevice.add(device.getOwner());
-
-        device.setUsers(usersInDevice);
         save(device);
     }
 
