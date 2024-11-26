@@ -28,6 +28,8 @@ public class StudioService {
     private final StudioInfoDTOMapper studioInfoDTOMapper;
     private final UserInfoDTOMapper userInfoDTOMapper;
 
+
+
     public StudioService(@Lazy DeviceService deviceService, @Lazy UserService userService, @Lazy StudioRepository studioRepository, @Lazy  StudioInfoDTOMapper studioInfoDTOMapper, @Lazy UserInfoDTOMapper userInfoDTOMapper){
         this.studioRepository = studioRepository;
         this.userService = userService;
@@ -173,7 +175,6 @@ public class StudioService {
      * @param userId ID of user
      * @param studioId ID of studio
      */
-    @Transactional
     public void setManager(Long userId, Long studioId){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to add manager to studio");
@@ -191,7 +192,6 @@ public class StudioService {
      * Remove manager from studio
      * @param studio_id ID of studio
      */
-    @Transactional
     public void removeManager(Long studio_id){
         if(!userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not authorized to remove manager from studio");
@@ -208,7 +208,6 @@ public class StudioService {
      * @param studio_id ID of studio
      * @param user_id ID of user
      */
-    @Transactional
     public void removeUser(Long studio_id, Long user_id){
         if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
             throw new NotAuthorizedException("You are not authorized to remove users from studio");
@@ -226,7 +225,6 @@ public class StudioService {
      * @param studioId ID of studio
      * @param userId ID of user
      */
-    @Transactional
     public void addUser(Long studioId, Long userId){
         if(!((userService.checkCurrentUserRole(Role.ADMIN)) || (userService.checkCurrentUserRole(Role.STUDIO_MANAGER))))
             throw new NotAuthorizedException("You are not authorized to add users to the studio");
@@ -248,13 +246,13 @@ public class StudioService {
      * @param userId ID of user
      * @param studioId ID of studio
      */
-    @Transactional
     public void addTeacher(Long userId, Long studioId) {
         Studio studio = getById(studioId);
         User newTeacher = userService.getById(userId);
         if(!userService.getCurrentUser().getId().equals(studio.getManager().getId())
                         && !userService.checkCurrentUserRole(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to add teachers to this studio");
+
         deleteUserFromEveryStudiosAsUser(userId);
         studio.getTeachers().add(newTeacher);
         save(studio);
@@ -266,7 +264,6 @@ public class StudioService {
      * @param userId ID of user
      * @param studioId ID of studio
      */
-    @Transactional
     public void removeTeacher(Long userId, Long studioId){
         Studio studio = getById(studioId);
         User user = userService.getById(userId);
@@ -344,7 +341,6 @@ public class StudioService {
      * Delete user from every studio as user
      * @param userId ID of user
      */
-    @Transactional
     public void deleteUserFromEveryStudiosAsUser(Long userId){
         User user = userService.getById(userId);
         List<Studio> studios = studioRepository.findAllByUsersContaining(user);
