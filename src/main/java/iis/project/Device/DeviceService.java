@@ -210,12 +210,11 @@ public class DeviceService {
 
         usersInStudio.removeAll(usersInDevice);
         usersInStudio.removeAll(teachersInStudio);
-        usersInStudio.remove(device.getOwner());
+        usersInStudio.add(device.getStudio().getManager());
 
         usersInDevice.addAll(usersInStudio);
         usersInDevice.addAll(teachersInStudio);
-        usersInDevice.add(device.getOwner());
-
+        usersInStudio.add(device.getStudio().getManager());
 
         device.setUsers(usersInDevice);
         save(device);
