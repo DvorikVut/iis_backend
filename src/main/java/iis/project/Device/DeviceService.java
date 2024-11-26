@@ -189,8 +189,10 @@ public class DeviceService {
         List<Device> devicesInStudio = deviceRepository.findAllByStudio(studio);
         for (Device device : devicesInStudio) {
             if (device.getForAll()) {
-                device.getUsers().add(user);
-                save(device);
+                if(!device.getUsers().contains(user)) {
+                    device.getUsers().add(user);
+                    save(device);
+                }
             }
         }
     }
