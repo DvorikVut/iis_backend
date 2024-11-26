@@ -86,7 +86,6 @@ public class DeviceService {
 
         if (device.getForAll())
             allowDeviceToAllUsersInStudio(device.getId());
-
         return "Success";
     }
 
@@ -131,7 +130,7 @@ public class DeviceService {
 
         Long owner_id = getById(device_id).getOwner().getId();
 
-        if (!(Objects.equals(userService.getCurrentUser().getId(), owner_id))) {
+        if (!(Objects.equals(userService.getCurrentUser().getId(), owner_id)) && !userService.checkCurrentUserRole(Role.ADMIN)) {
             throw new NotAuthorizedException("You must be the owner to change the device");
         }
 
