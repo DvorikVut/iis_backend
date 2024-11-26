@@ -81,7 +81,6 @@ public class DeviceService {
                 .forAll(newDeviceDTO.forAll())
                 .owner(userService.getCurrentUser())
                 .build();
-
         save(device);
 
         if (device.getForAll())
@@ -209,10 +208,16 @@ public class DeviceService {
         List<User> usersInDevice = device.getUsers();
         List<User> usersInStudio = device.getStudio().getUsers();
         List<User> teachersInStudio = device.getStudio().getTeachers();
+
+        usersInStudio.removeAll(usersInDevice);
+        usersInStudio.removeAll(teachersInStudio);
+        usersInStudio.add(studioService.getById(device.getStudio().getId()).getManager());
+
         usersInDevice.addAll(usersInStudio);
         usersInDevice.addAll(teachersInStudio);
         usersInStudio.add(studioService.getById(device.getStudio().getId()).getManager());
         device.setUsers(usersInDevice);
+
         save(device);
     }
 
