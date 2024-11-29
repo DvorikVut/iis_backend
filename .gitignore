@@ -1,6 +1,10 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
+/.mnv/
+mvnw
+mvnw.cmd
+init.sql
+cloudbuild.yaml
 !**/src/main/**/target/
 !**/src/test/**/target/
 
